@@ -1,63 +1,161 @@
+/* columns-about — "A global gaming content leader" section */
+
+/* Section */
+.columns-about-container {
+  padding: 80px 0;
+}
+
+/* Match global container: 1320px max, consistent margins */
+.columns-about-container .columns-about-wrapper {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+/* Two-column layout */
 .columns-about > div {
   display: flex;
   flex-direction: column;
   gap: 32px;
 }
 
+/* Text column — slides from left */
+.columns-about > div > div:first-child {
+  opacity: 0;
+  transform: translate(-200px, 0) scale(1.15);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+/* Image column — slides from right */
+.columns-about > div > .columns-about-img-col {
+  opacity: 0;
+  transform: translate(200px, 0) scale(1.15);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+  position: relative;
+  overflow: visible;
+}
+
+/* Animated in-view state */
+.columns-about.in-view > div > div:first-child,
+.columns-about.in-view > div > .columns-about-img-col {
+  opacity: 1;
+  transform: translate(0, 0) scale(1);
+}
+
+/* Heading — Baloo Thambi 2, 64px, dark navy #072c51 */
 .columns-about h2 {
-  font-size: var(--heading-font-size-xl);
+  font-family: var(--heading-font-family);
+  font-size: 40px;
   font-weight: 700;
-  line-height: 1.15;
+  line-height: 1.1;
+  color: #072c51;
   margin-top: 0;
+  text-align: center;
 }
 
+/* Body text — Roboto, 20px, dark navy */
 .columns-about p {
-  font-size: var(--body-font-size-s);
-  line-height: 1.7;
-  color: #333;
+  font-family: roboto, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #072c51;
 }
 
-.columns-about a.button {
-  border-color: var(--accent-color, #e6007e);
-  background-color: var(--accent-color, #e6007e);
+/* CTA button — coral #fa724f, pill, 24px */
+.columns-about .button-container,
+.columns-about .button-wrapper {
+  text-align: left;
+  margin-top: 48px;
+}
+
+.columns-about a.button,
+.columns-about a.button.primary {
+  background-color: #fa724f;
   color: #fff;
-  font-weight: 600;
-  padding: 12px 32px;
-  border-radius: 0;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  border: 1px solid #fa724f;
+  border-radius: 80px;
+  padding: 16px 32px;
+  font-family: var(--heading-font-family);
+  font-size: 20px;
+  font-weight: 700;
+  text-transform: none;
+  display: inline-block;
+  transition: background-color 0.3s, border-color 0.3s;
 }
 
-.columns-about a.button:hover {
-  background-color: #c40069;
-  border-color: #c40069;
+.columns-about a.button:hover,
+.columns-about a.button.primary:hover {
+  background-color: #e5603e;
+  border-color: #e5603e;
+  color: #fff;
+  text-decoration: none;
+}
+
+/*
+ * Layered images matching original:
+ * Background blob (.columns-about-bg) — static flow, parallax via JS
+ * Foreground cards (.columns-about-fg) — absolute, top:50%, z-index:2
+ */
+.columns-about .columns-about-bg {
+  display: block;
+  position: relative;
+  z-index: 0;
+  will-change: transform;
+}
+
+/* Cards aligned to body text start */
+.columns-about .columns-about-fg {
+  position: absolute;
+  top: 18%;
+  left: 0;
+  width: 100%;
+  z-index: 2;
 }
 
 .columns-about img {
   width: 100%;
   height: auto;
+  display: block;
 }
 
-.columns-about > div > .columns-about-img-col {
-  order: -1;
-}
-
+/* Desktop */
 @media (width >= 900px) {
+  .columns-about-container {
+    padding: 160px 0;
+  }
+
   .columns-about > div {
     flex-direction: row;
     align-items: center;
-    gap: 64px;
+    gap: 48px;
   }
 
-  .columns-about > div > div {
-    flex: 1;
+  .columns-about > div > div:first-child {
+    flex: 5;
   }
 
   .columns-about > div > .columns-about-img-col {
+    flex: 6;
     order: 1;
   }
 
   .columns-about h2 {
-    font-size: 42px;
+    font-size: 64px;
+    text-align: left;
+  }
+
+  .columns-about p {
+    font-size: 20px;
+    line-height: 1.5;
+  }
+
+  .columns-about .button-container {
+    text-align: left;
+  }
+
+  .columns-about a.button,
+  .columns-about a.button.primary {
+    font-size: 24px;
+    padding: 18px 32px;
   }
 }
