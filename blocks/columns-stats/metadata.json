@@ -1,0 +1,39 @@
+{
+  "variantName": "columns-stats",
+  "baseBlock": "columns",
+  "version": "1.0.0",
+  "created": "2026-04-15T07:23:00.000Z",
+  "sourceContext": {
+    "originUrl": "https://www.aristocrat.com/",
+    "originPage": "corporate homepage",
+    "blockPosition": "middle"
+  },
+  "visualCharacteristics": {
+    "colorScheme": "dark",
+    "density": "compact",
+    "purpose": "stats-counter",
+    "imagePattern": "noimg"
+  },
+  "contentPattern": {
+    "structure": "4 columns with number + label",
+    "buttonCount": 0,
+    "imageCount": 0
+  },
+  "reuseGuidance": {
+    "suitableFor": [
+      "statistics display sections",
+      "key metrics or KPI showcases",
+      "number-focused content on dark backgrounds"
+    ],
+    "notSuitableFor": [
+      "text-heavy side-by-side layouts",
+      "image gallery columns",
+      "content with CTAs"
+    ]
+  },
+  "usage": {
+    "pagesUsing": ["/content/index"],
+    "reuseCount": 1,
+    "lastUsed": "2026-04-15T07:23:00.000Z"
+  }
+}

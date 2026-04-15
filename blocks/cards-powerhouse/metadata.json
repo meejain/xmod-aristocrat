@@ -1,0 +1,39 @@
+{
+  "variantName": "cards-powerhouse",
+  "baseBlock": "cards",
+  "version": "1.0.0",
+  "created": "2026-04-15T07:23:00.000Z",
+  "sourceContext": {
+    "originUrl": "https://www.aristocrat.com/",
+    "originPage": "corporate homepage",
+    "blockPosition": "middle"
+  },
+  "visualCharacteristics": {
+    "colorScheme": "dark",
+    "density": "spacious",
+    "purpose": "feature-cards",
+    "imagePattern": "large"
+  },
+  "contentPattern": {
+    "structure": "3 cards with image + heading + description + CTA",
+    "buttonCount": 3,
+    "imageCount": 3
+  },
+  "reuseGuidance": {
+    "suitableFor": [
+      "business unit showcases",
+      "feature highlights with images and CTAs",
+      "product or service category cards"
+    ],
+    "notSuitableFor": [
+      "text-only card lists",
+      "small icon-based feature grids",
+      "team member profiles"
+    ]
+  },
+  "usage": {
+    "pagesUsing": ["/content/index"],
+    "reuseCount": 1,
+    "lastUsed": "2026-04-15T07:23:00.000Z"
+  }
+}

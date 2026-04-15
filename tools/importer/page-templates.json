@@ -1,0 +1,103 @@
+{
+  "templates": [
+    {
+      "name": "homepage",
+      "urls": [
+        "https://www.aristocrat.com/"
+      ],
+      "description": "Aristocrat main homepage with hero, featured content, and corporate information",
+      "blocks": [
+        {
+          "name": "hero-corporate",
+          "instances": [
+            "section.block_hero_slider-wrapper .swiper-slide.swiper-slide-active"
+          ]
+        },
+        {
+          "name": "columns-stats",
+          "instances": [
+            "section.block_counter-wrapper .block_counter"
+          ]
+        },
+        {
+          "name": "columns-about",
+          "instances": [
+            "section.block_2columns-wrapper .row.justify-content-between"
+          ]
+        },
+        {
+          "name": "cards-powerhouse",
+          "instances": [
+            "section.block_cards_slider-wrapper .block_cards_slider"
+          ]
+        },
+        {
+          "name": "cards-locations",
+          "instances": [
+            "section.block_interactive_map-wrapper"
+          ]
+        }
+      ],
+      "sections": [
+        {
+          "id": "section-1",
+          "name": "Hero",
+          "selector": "section.block_hero_slider-wrapper",
+          "style": null,
+          "blocks": [
+            "hero-corporate"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-2",
+          "name": "Stats Counter",
+          "selector": "section.block_counter-wrapper",
+          "style": "dark",
+          "blocks": [
+            "columns-stats"
+          ],
+          "defaultContent": [
+            "section.block_counter-wrapper .block_header h2",
+            "section.block_counter-wrapper .block_header h3"
+          ]
+        },
+        {
+          "id": "section-3",
+          "name": "About Two Columns",
+          "selector": "section.block_2columns-wrapper",
+          "style": null,
+          "blocks": [
+            "columns-about"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-4",
+          "name": "Cards Slider",
+          "selector": "section.block_cards_slider-wrapper",
+          "style": "dark",
+          "blocks": [
+            "cards-powerhouse"
+          ],
+          "defaultContent": [
+            "section.block_cards_slider-wrapper .block_header h2",
+            "section.block_cards_slider-wrapper .block_header h3"
+          ]
+        },
+        {
+          "id": "section-5",
+          "name": "World Map / Global Locations",
+          "selector": "section.block_interactive_map-wrapper",
+          "style": "dark",
+          "blocks": [
+            "cards-locations"
+          ],
+          "defaultContent": [
+            "section.block_interactive_map-wrapper .block_header h2"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -14,14 +14,19 @@
   /* colors */
   --background-color: white;
   --light-color: #f8f8f8;
-  --dark-color: #505050;
+  --dark-color: #0a0a2e;
   --text-color: #131313;
-  --link-color: #3b63fb;
-  --link-hover-color: #1d3ecf;
+  --link-color: #9518e3;
+  --link-hover-color: #7a12bd;
+  --accent-color: #9518e3;
+  --accent-hover-bg: #fff;
+  --accent-hover-color: #072c51;
+  --dark-bg: #072c51;
+  --dark-text: #fff;
 
   /* fonts */
-  --body-font-family: roboto, roboto-fallback, sans-serif;
-  --heading-font-family: roboto-condensed, roboto-condensed-fallback, sans-serif;
+  --body-font-family: 'baloo thambi 2', sans-serif;
+  --heading-font-family: 'baloo thambi 2', sans-serif;
 
   /* body sizes */
   --body-font-size-m: 22px;
@@ -40,13 +45,7 @@
   --nav-height: 64px;
 }
 
-/* fallback fonts */
-@font-face {
-  font-family: roboto-condensed-fallback;
-  size-adjust: 88.82%;
-  src: local('Arial');
-}
-
+/* fallback font */
 @font-face {
   font-family: roboto-fallback;
   size-adjust: 99.529%;
@@ -86,6 +85,11 @@ body.appear {
 
 header {
   height: var(--nav-height);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
 }
 
 header .header,
@@ -308,6 +312,12 @@ main > .section > div {
 
 main > .section:first-of-type {
   margin-top: 0;
+  padding-top: 0;
+}
+
+main > .section.hero-carousel-container {
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 @media (width >= 900px) {
@@ -322,4 +332,40 @@ main .section.highlight {
   background-color: var(--light-color);
   margin: 0;
   padding: 40px 0;
+}
+
+/* dark section */
+main .section.dark {
+  background-color: var(--dark-bg);
+  color: var(--dark-text);
+  margin: 0;
+  padding: 60px 0;
+}
+
+main .section.dark h2,
+main .section.dark h3,
+main .section.dark h4,
+main .section.dark p {
+  color: var(--dark-text);
+}
+
+main .section.dark a:any-link {
+  color: var(--accent-color);
+}
+
+main .section.dark a.button.primary {
+  border-color: var(--accent-color);
+  background-color: var(--accent-color);
+  color: var(--dark-text);
+}
+
+main .section.dark a.button.primary:hover {
+  background-color: var(--accent-hover-bg, #fff);
+  border-color: var(--accent-hover-bg, #fff);
+  color: var(--accent-hover-color, #072c51);
+}
+
+main .section.dark a.button.secondary {
+  border-color: var(--dark-text);
+  color: var(--dark-text);
 }
