@@ -3,6 +3,7 @@
 .cards-powerhouse-container {
   background-color: #072c51;
   padding: 80px 0;
+  overflow: visible;
 }
 
 .cards-powerhouse-container .default-content-wrapper {
@@ -31,7 +32,8 @@
   position: relative;
   max-width: 1320px;
   margin: 0 auto;
-  padding: 0 48px;
+  padding: 0 68px;
+  overflow: visible;
 }
 
 .cards-powerhouse .cards-slider {
@@ -55,13 +57,13 @@
   padding-bottom: 60px;
 }
 
-/* Flip wrapper — perspective */
+/* Flip wrapper — fixed height matching original */
 .cards-powerhouse .flip-card-wrapper {
   perspective: 1000px;
   display: flex;
   align-self: center;
   width: 100%;
-  aspect-ratio: 10 / 16;
+  height: 427px;
 }
 
 /* Flip card — 3D */
@@ -233,12 +235,12 @@
 }
 
 .cards-powerhouse .cards-nav-prev {
-  left: -24px;
+  left: -8px;
   transform: translateY(-50%);
 }
 
 .cards-powerhouse .cards-nav-next {
-  right: -24px;
+  right: -8px;
   transform: translateY(-50%);
 }
 
@@ -252,12 +254,20 @@
     padding: 0 48px;
   }
 
+  .cards-powerhouse .flip-card-wrapper {
+    height: 427px;
+  }
+
   .cards-powerhouse-container .default-content-wrapper h2 {
     font-size: 64px;
   }
 
   .cards-powerhouse-container .default-content-wrapper h3 {
     font-size: 32px;
+  }
+
+  .cards-powerhouse .cards-slides > li {
+    flex: 0 0 calc(33.333% - 22px);
   }
 
   .cards-powerhouse .cards-nav {
@@ -267,6 +277,10 @@
 }
 
 @media (width >= 1200px) {
+  .cards-powerhouse .flip-card-wrapper {
+    height: 501px;
+  }
+
   .cards-powerhouse .cards-nav {
     width: 72px;
     height: 120px;
@@ -294,6 +308,10 @@
 }
 
 @media (width >= 1400px) {
+  .cards-powerhouse .flip-card-wrapper {
+    height: 597px;
+  }
+
   .cards-powerhouse .card-back-content p {
     font-size: 1.5rem;
   }
