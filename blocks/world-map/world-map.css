@@ -1,0 +1,24 @@
+.world-map {
+  display: none;
+  padding: 0;
+  margin: 0;
+  max-width: none;
+}
+
+.world-map .world-map-container {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  line-height: 0;
+}
+
+.world-map .world-map-container svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+@media (width >= 900px) {
+  .world-map {
+    display: block;
+  }
+}
