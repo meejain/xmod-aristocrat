@@ -338,7 +338,13 @@ main .section.dark {
   background-color: var(--dark-bg);
   color: var(--dark-text);
   margin: 0;
-  padding: 60px 0;
+  padding: 80px 0;
+}
+
+@media (width >= 900px) {
+  main .section.dark {
+    padding: 160px 0;
+  }
 }
 
 main .section.dark h2,
@@ -367,4 +373,25 @@ main .section.dark a.button.primary:hover {
 main .section.dark a.button.secondary {
   border-color: var(--dark-text);
   color: var(--dark-text);
+}
+
+/* gradient map section */
+main .section.gradient-map {
+  background: #75bbb9;
+  background: linear-gradient(45deg, #75bbb9 0%, #786cff 100%);
+  color: var(--dark-text);
+  padding: 40px 0 0;
+  margin: 0;
+}
+
+main .section.gradient-map h2,
+main .section.gradient-map h3,
+main .section.gradient-map p {
+  color: var(--dark-text);
+  text-align: center;
+}
+
+main .section.gradient-map h2 {
+  margin: 0 0 24px;
+  font-size: 64px;
 }
