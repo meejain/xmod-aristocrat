@@ -1,15 +1,21 @@
 /* hero-carousel — Aristocrat homepage hero */
 
-.hero-carousel-container {
-  background-color: var(--dark-bg, #072c51);
-  margin: 0 !important;
-  padding: 0 !important;
+/* Full-bleed hero — zero margin/padding at every level, flush to top */
+main > div:first-child,
+main > .section.hero-carousel-container {
+  margin: 0;
+  padding: 0;
 }
 
-.hero-carousel-container .hero-carousel-wrapper {
+main > .section.hero-carousel-container > .hero-carousel-wrapper {
   max-width: unset;
   padding: 0;
   margin: 0;
+}
+
+.hero-carousel {
+  margin: 0;
+  padding: 0;
 }
 
 /* Slides container — positioning parent for dots */
@@ -82,25 +88,42 @@
   inset: 0;
 }
 
+/* Video iframe — scaled to cover entire slide, no sidebars at any viewport */
 .hero-carousel .hero-carousel-video-wrapper iframe {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 177.78vh;
-  height: 100vh;
   min-width: 100%;
   min-height: 100%;
-  transform: translate(-50%, -50%);
+  width: auto;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  transform: translate(-50%, -50%) scale(1.2);
   pointer-events: none;
   border: 0;
   z-index: 2;
 }
 
-/* Poster image — always visible as fallback */
+@media (aspect-ratio >= 16/9) {
+  .hero-carousel .hero-carousel-video-wrapper iframe {
+    width: 100%;
+    height: auto;
+  }
+}
+
+@media (aspect-ratio < 16/9) {
+  .hero-carousel .hero-carousel-video-wrapper iframe {
+    width: auto;
+    height: 100%;
+  }
+}
+
+/* Poster image — hidden by default, only shown briefly before video loads */
 .hero-carousel .hero-carousel-poster {
   position: absolute;
   inset: 0;
   z-index: 1;
+  display: none;
 }
 
 /* stylelint-disable-next-line no-descending-specificity */
