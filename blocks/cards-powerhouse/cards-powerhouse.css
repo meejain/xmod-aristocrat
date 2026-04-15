@@ -6,6 +6,12 @@
   overflow: visible;
 }
 
+/* Match .block_cards_slider-wrapper .block_cards_slider-container-lg .block_cards_slider */
+.cards-powerhouse-container .cards-powerhouse {
+  margin-top: -1.75rem;
+  margin-bottom: -3.75rem;
+}
+
 .cards-powerhouse-container .default-content-wrapper {
   text-align: center;
   max-width: 1320px;
@@ -27,18 +33,24 @@
   margin: 0;
 }
 
-/* Slider container */
+/* Slider container — tight horizontal padding on small screens (cf. block_cards_slider-container-lg) */
 .cards-powerhouse {
   position: relative;
   max-width: 1320px;
   margin: 0 auto;
-  padding: 0 68px;
+  padding: 0 12px;
   overflow: visible;
 }
 
+@media (width >= 768px) {
+  .cards-powerhouse {
+    padding: 0 24px;
+  }
+}
+
 .cards-powerhouse .cards-slider {
+  width: 100%;
   overflow: hidden;
-  padding: 60px 0;
 }
 
 /* Track — flex row, moves via translate3d */
@@ -47,23 +59,30 @@
   gap: 32px;
 }
 
-/* Individual slide */
+/* Individual slide — flex-basis set in JS (Swiper slidesPerView 1.1 / 2.2 / 3) */
 .cards-powerhouse .cards-slide {
-  flex: 0 0 calc(33.333% - 22px);
-  min-width: 250px;
+  flex: 0 0 auto;
+  min-width: 0;
   display: flex;
   justify-content: center;
-  padding-top: 60px;
-  padding-bottom: 60px;
+  padding-top: 3.75rem;
+  padding-bottom: 3.75rem;
 }
 
-/* Flip wrapper — fixed height matching original */
+/* Flip wrapper — full width on phone; 80% tablet (Swiper default) */
 .cards-powerhouse .flip-card-wrapper {
   perspective: 1000px;
   display: flex;
   align-self: center;
   width: 100%;
+  max-width: 100%;
   height: 427px;
+}
+
+@media (width >= 768px) and (width < 992px) {
+  .cards-powerhouse .flip-card-wrapper {
+    width: 80%;
+  }
 }
 
 /* Flip card — 3D */
@@ -155,26 +174,52 @@
   margin: 0;
 }
 
+@media (width >= 576px) {
+  .cards-powerhouse .card-back-content p {
+    font-size: 1.25rem;
+  }
+}
+
+@media (width >= 1200px) and (max-width: 1399.98px) {
+  .cards-powerhouse .card-back-content p {
+    font-size: 1rem;
+  }
+
+  .cards-powerhouse .card-back .card-body a.card-btn,
+  .cards-powerhouse .card-back .card-body a.card-btn:any-link {
+    font-size: 1rem;
+  }
+}
+
 /* Button — flex pushes to bottom via space-between on card-body */
 .cards-powerhouse .card-back .card-body a.card-btn,
 .cards-powerhouse .card-back .card-body a.card-btn:any-link {
   display: block;
+  width: 100%;
+  box-sizing: border-box;
   background-color: #fa724f;
   color: #fff;
   border: 1px solid #fa724f;
   border-radius: 80px;
   padding: 18px 32px 16px;
   font-family: var(--heading-font-family);
-  font-size: 20px;
+  font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 1px;
-  line-height: 20px;
+  line-height: 1.25;
   text-decoration: none;
   text-align: center;
   flex-shrink: 0;
   z-index: 99;
   backface-visibility: hidden;
   transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+@media (width >= 321px) {
+  .cards-powerhouse .card-back .card-body a.card-btn,
+  .cards-powerhouse .card-back .card-body a.card-btn:any-link {
+    font-size: 1.25rem;
+  }
 }
 
 .cards-powerhouse .card-back .card-body a.card-btn:hover {
@@ -184,38 +229,41 @@
   text-decoration: none;
 }
 
-/* Per-card gradient backgrounds */
-.cards-powerhouse .cards-slide:nth-child(3n+1) .card-body {
+/* Per-card backgrounds (inline styles from aristocrat.com cards-view-3) */
+.cards-powerhouse .flip-card-wrapper[data-theme='0'] .card-body {
+  background: #786cff;
   background: linear-gradient(0deg, #786cff 0%, #3c24ca 100%);
 }
 
-.cards-powerhouse .cards-slide:nth-child(3n+2) .card-body {
+.cards-powerhouse .flip-card-wrapper[data-theme='1'] .card-body {
+  background: #f0a6ff;
   background: linear-gradient(0deg, #f0a6ff 0%, #786cff 100%);
 }
 
-.cards-powerhouse .cards-slide:nth-child(3n+3) .card-body {
+.cards-powerhouse .flip-card-wrapper[data-theme='2'] .card-body {
+  background: #92cb80;
   background: linear-gradient(0deg, #92cb80 0%, #fbc861 100%);
 }
 
-/* Highlighted word colors */
-.cards-powerhouse .cards-slide:nth-child(3n+1) h4 em {
+.cards-powerhouse .flip-card-wrapper[data-theme='0'] h4 em {
   color: #f2512e;
   font-style: normal;
 }
 
-.cards-powerhouse .cards-slide:nth-child(3n+2) h4 em {
+.cards-powerhouse .flip-card-wrapper[data-theme='1'] h4 em {
   color: #fcc960;
   font-style: normal;
 }
 
-.cards-powerhouse .cards-slide:nth-child(3n+3) h4 em {
+.cards-powerhouse .flip-card-wrapper[data-theme='2'] h4 em {
   color: #f36f64;
   font-style: normal;
 }
 
 
-/* Navigation arrows */
+/* Navigation — colors/hover from aristocrat-2021 bundle.css (global .swiper-button-*) */
 .cards-powerhouse .cards-nav {
+  display: block;
   position: absolute;
   top: 50%;
   margin-top: 0;
@@ -223,39 +271,67 @@
   background: none;
   border: none;
   padding: 0;
-  z-index: 5;
-  width: 48px;
-  height: 80px;
-  transform: translateY(-50%);
+  z-index: 10;
+  width: 2.25rem;
+  height: 4rem;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 .cards-powerhouse .cards-nav svg {
   width: 100%;
   height: 100%;
+  display: block;
 }
 
+/* Triangle: default lavender, gold on hover/focus (matches live site) */
+.cards-powerhouse .cards-nav svg path.triangle {
+  fill: #f0a6ff;
+  transition: fill 0.4s ease;
+}
+
+.cards-powerhouse .cards-nav:hover svg path.triangle,
+.cards-powerhouse .cards-nav:focus-visible svg path.triangle {
+  fill: #fcc960;
+}
+
+.cards-powerhouse .cards-nav:focus-visible {
+  outline: 2px solid #fcc960;
+  outline-offset: 4px;
+}
+
+.cards-powerhouse .cards-nav:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Arc stays white on dark sections (cf. .section.darker-theme) */
+.cards-powerhouse .cards-nav svg path.arc {
+  fill: #fff;
+  transition: opacity 0.4s ease;
+}
+
+.cards-powerhouse .cards-nav:hover svg path.arc,
+.cards-powerhouse .cards-nav:focus-visible svg path.arc {
+  opacity: 0.92;
+}
+
+/* Mobile: keep controls inside the viewport */
 .cards-powerhouse .cards-nav-prev {
-  left: -8px;
+  left: 0;
   transform: translateY(-50%);
 }
 
 .cards-powerhouse .cards-nav-next {
-  right: -8px;
+  right: 0;
+  left: auto;
   transform: translateY(-50%);
 }
 
-/* Desktop */
 @media (width >= 900px) {
   .cards-powerhouse-container {
     padding: 160px 0;
-  }
-
-  .cards-powerhouse {
-    padding: 0 48px;
-  }
-
-  .cards-powerhouse .flip-card-wrapper {
-    height: 427px;
   }
 
   .cards-powerhouse-container .default-content-wrapper h2 {
@@ -265,14 +341,35 @@
   .cards-powerhouse-container .default-content-wrapper h3 {
     font-size: 32px;
   }
+}
 
-  .cards-powerhouse .cards-slides > li {
-    flex: 0 0 calc(33.333% - 22px);
+@media (width >= 992px) {
+  .cards-powerhouse {
+    padding: 0 3rem;
+  }
+
+  .cards-powerhouse .flip-card-wrapper {
+    width: 100%;
+    height: 427px;
   }
 
   .cards-powerhouse .cards-nav {
-    width: 48px;
-    height: 80px;
+    width: 3rem;
+    height: 5rem;
+  }
+
+  .cards-powerhouse .cards-nav-prev {
+    transform: translate(-150%, -50%);
+  }
+
+  .cards-powerhouse .cards-nav-next {
+    transform: translate(150%, -50%);
+  }
+}
+
+@media (width >= 1200px) and (max-width: 1489.98px) {
+  .cards-powerhouse {
+    padding: 0 4.25rem;
   }
 }
 
@@ -282,18 +379,17 @@
   }
 
   .cards-powerhouse .cards-nav {
-    width: 72px;
-    height: 120px;
-  }
-
-  .cards-powerhouse .card-back-content p {
-    font-size: 1.25rem;
+    width: 4.5rem;
+    height: 7.5rem;
   }
 
   /* stylelint-disable no-descending-specificity */
-  .cards-powerhouse .card-front .card-body h4,
-  .cards-powerhouse .card-back-content h4 {
+  .cards-powerhouse .card-front .card-body h4 {
     font-size: 2rem;
+  }
+
+  .cards-powerhouse .card-back-content h4 {
+    font-size: 1.75rem;
   }
   /* stylelint-enable no-descending-specificity */
 
@@ -317,9 +413,14 @@
   }
 
   /* stylelint-disable no-descending-specificity */
-  .cards-powerhouse .card-front .card-body h4,
   .cards-powerhouse .card-back-content h4 {
     font-size: 2rem;
   }
   /* stylelint-enable no-descending-specificity */
+}
+
+@media (width >= 1490px) {
+  .cards-powerhouse .flip-card-wrapper {
+    height: 619px;
+  }
 }

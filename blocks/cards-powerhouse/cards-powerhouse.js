@@ -1,28 +1,36 @@
 import { createOptimizedPicture } from '../../scripts/aem.js';
 
+/** Match original inline spans: flex #f2512e, innovate #fcc960, lead #f36f64 */
+const HIGHLIGHT_RES = [/\bFlex\b/i, /\bInnovate\b/i, /\bLead\b/i];
+
 function buildHeading(text) {
   const h4 = document.createElement('h4');
-  const words = ['Flex', 'Innovate', 'Lead'];
-  let found = false;
-  words.forEach((word) => {
-    if (text.includes(word) && !found) {
-      const idx = text.indexOf(word);
-      if (idx > 0) h4.append(document.createTextNode(text.substring(0, idx)));
-      const em = document.createElement('em');
-      em.textContent = word;
-      h4.append(em);
-      const rest = text.substring(idx + word.length);
-      if (rest) h4.append(document.createTextNode(rest));
-      found = true;
-    }
-  });
-  if (!found) h4.textContent = text;
+  const plain = text?.trim() || '';
+  const matchRe = HIGHLIGHT_RES.find((re) => re.test(plain));
+  if (!matchRe) {
+    h4.textContent = plain;
+    return h4;
+  }
+  const idx = plain.search(matchRe);
+  if (idx < 0) {
+    h4.textContent = plain;
+    return h4;
+  }
+  const hit = plain.match(matchRe);
+  const len = hit ? hit[0].length : 0;
+  if (idx > 0) h4.append(document.createTextNode(plain.substring(0, idx)));
+  const em = document.createElement('em');
+  em.textContent = plain.substring(idx, idx + len);
+  h4.append(em);
+  const rest = plain.substring(idx + len);
+  if (rest) h4.append(document.createTextNode(rest));
   return h4;
 }
 
-function buildCard(headingText, imgSrc, imgAlt, descText, ctaHref, ctaText) {
+function buildCard(headingText, imgSrc, imgAlt, descText, ctaHref, ctaText, themeIndex) {
   const wrapper = document.createElement('div');
   wrapper.classList.add('flip-card-wrapper');
+  if (themeIndex != null) wrapper.dataset.theme = String(themeIndex);
 
   const flipCard = document.createElement('div');
   flipCard.classList.add('flip-card');
@@ -69,8 +77,9 @@ function buildCard(headingText, imgSrc, imgAlt, descText, ctaHref, ctaText) {
 }
 
 /* eslint-disable max-len, quotes */
-const PREV_SVG = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 110.5 184.59'><path class='triangle' d='M30.5 118.6a2.5 2.5 0 01-1.66-.64L.84 93A2.5 2.5 0 010 91a2.5 2.5 0 01.91-1.88l28-23A2.5 2.5 0 0133 68v48a2.5 2.5 0 01-2.5 2.6z' fill='#ff512e'/><path d='M61.6 184.2a5 5 0 01-3-9 103.5 103.5 0 0041.9-82.9A103.4 103.4 0 0058.1 9 5 5 0 0163 .3a4.8 4.8 0 011 .7 113.5 113.5 0 0146.5 91.3 113.5 113.5 0 01-45.9 90.9 5 5 0 01-3 1z' fill='#fff'/></svg>`;
-const NEXT_SVG = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 110.5 184.59'><path class='triangle' d='M80 65.2a2.5 2.5 0 011.66.64l28 25a2.5 2.5 0 01-.07 3.82l-28 23A2.5 2.5 0 0177.5 116V68a2.5 2.5 0 012.5-2.8z' fill='#ff512e'/><path d='M48.9-.4a5 5 0 013 9 103 103 0 00.5 166.2 5 5 0 01-4.9 8.7 5.2 5.2 0 01-1-.7A113 113 0 0145.9.6 5 5 0 0148.9-.4z' fill='#fff'/></svg>`;
+/* Triangle fill from theme bundle.css; hover overrides to #fcc960 */
+const PREV_SVG = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 110.5 184.59' aria-hidden='true'><path class='triangle' d='M30.5 118.6a2.5 2.5 0 01-1.66-.64L.84 93A2.5 2.5 0 010 91a2.5 2.5 0 01.91-1.88l28-23A2.5 2.5 0 0133 68v48a2.5 2.5 0 01-2.5 2.6z'/><path class='arc' d='M61.6 184.2a5 5 0 01-3-9 103.5 103.5 0 0041.9-82.9A103.4 103.4 0 0058.1 9 5 5 0 0163 .3a4.8 4.8 0 011 .7 113.5 113.5 0 0146.5 91.3 113.5 113.5 0 01-45.9 90.9 5 5 0 01-3 1z' fill='#fff'/></svg>`;
+const NEXT_SVG = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 110.5 184.59' aria-hidden='true'><path class='triangle' d='M80 65.2a2.5 2.5 0 011.66.64l28 25a2.5 2.5 0 01-.07 3.82l-28 23A2.5 2.5 0 0177.5 116V68a2.5 2.5 0 012.5-2.8z'/><path class='arc' d='M48.9-.4a5 5 0 013 9 103 103 0 00.5 166.2 5 5 0 01-4.9 8.7 5.2 5.2 0 01-1-.7A113 113 0 0145.9.6 5 5 0 0148.9-.4z' fill='#fff'/></svg>`;
 /* eslint-enable max-len, quotes */
 
 export default function decorate(block) {
@@ -98,6 +107,10 @@ export default function decorate(block) {
     });
   });
 
+  if (!cardData.length) return;
+
+  const total = cardData.length;
+
   block.textContent = '';
 
   // Build slider
@@ -109,9 +122,10 @@ export default function decorate(block) {
 
   // Clone cards for infinite loop: [clone-last, ...originals, clone-first]
   const allCards = [...cardData, ...cardData, ...cardData];
-  allCards.forEach((data) => {
+  allCards.forEach((data, i) => {
     const slide = document.createElement('div');
     slide.classList.add('cards-slide');
+    const themeIndex = i % total;
     slide.append(buildCard(
       data.headingText,
       data.imgSrc,
@@ -119,6 +133,7 @@ export default function decorate(block) {
       data.descText,
       data.ctaHref,
       data.ctaText,
+      themeIndex,
     ));
     track.append(slide);
   });
@@ -139,14 +154,42 @@ export default function decorate(block) {
 
   block.append(prevBtn, nextBtn);
 
-  // Slider logic
-  const total = cardData.length;
+  // Slider logic (widths mirror Swiper block_cards_slider-3.js breakpoints)
   let current = total; // Start at first "real" set
   let transitioning = false;
 
+  const getLayout = () => {
+    const cw = slider.clientWidth;
+    let gap;
+    let perView;
+    if (cw < 768) {
+      gap = 0;
+      perView = 1.1;
+    } else if (cw < 992) {
+      gap = 16;
+      perView = 2.2;
+    } else {
+      gap = 32;
+      perView = 3;
+    }
+    const gapCount = Math.max(0, Math.ceil(perView) - 1);
+    const slideW = (cw - gap * gapCount) / perView;
+    return { gap, slideW };
+  };
+
+  const applySlideLayout = () => {
+    const { gap, slideW } = getLayout();
+    track.style.gap = `${gap}px`;
+    [...track.children].forEach((slide) => {
+      slide.style.flex = `0 0 ${slideW}px`;
+    });
+  };
+
   const getSlideWidth = () => {
     const slide = track.querySelector('.cards-slide');
-    return slide ? slide.offsetWidth + 32 : 300;
+    if (!slide) return 300;
+    const gap = parseFloat(getComputedStyle(track).columnGap || getComputedStyle(track).gap || '0') || 0;
+    return slide.offsetWidth + gap;
   };
 
   const goTo = (index, animate) => {
@@ -154,6 +197,7 @@ export default function decorate(block) {
       track.style.transition = 'transform 0.4s ease';
     } else {
       track.style.transition = 'none';
+      transitioning = false;
     }
     const offset = index * getSlideWidth();
     track.style.transform = `translate3d(-${offset}px, 0, 0)`;
@@ -185,8 +229,14 @@ export default function decorate(block) {
   });
 
   // Initial position (no animation)
-  requestAnimationFrame(() => goTo(current, false));
+  requestAnimationFrame(() => {
+    applySlideLayout();
+    goTo(current, false);
+  });
 
-  // Recalculate on resize
-  window.addEventListener('resize', () => goTo(current, false));
+  const ro = new ResizeObserver(() => {
+    applySlideLayout();
+    goTo(current, false);
+  });
+  ro.observe(slider);
 }
