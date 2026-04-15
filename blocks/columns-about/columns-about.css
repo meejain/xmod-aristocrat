@@ -1,8 +1,9 @@
 /* columns-about — "A global gaming content leader" section */
 
-/* Section */
+/* Section — overflow hidden to contain parallax blob */
 .columns-about-container {
   padding: 80px 0;
+  overflow: hidden;
 }
 
 /* Match global container: 1320px max, consistent margins */
