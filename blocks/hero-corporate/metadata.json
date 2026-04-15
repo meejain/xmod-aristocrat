@@ -1,0 +1,39 @@
+{
+  "variantName": "hero-corporate",
+  "baseBlock": "hero",
+  "version": "1.0.0",
+  "created": "2026-04-15T07:23:00.000Z",
+  "sourceContext": {
+    "originUrl": "https://www.aristocrat.com/",
+    "originPage": "corporate homepage",
+    "blockPosition": "top"
+  },
+  "visualCharacteristics": {
+    "colorScheme": "dark",
+    "density": "spacious",
+    "purpose": "corporate-hero",
+    "imagePattern": "large"
+  },
+  "contentPattern": {
+    "structure": "heading + subheading + CTA",
+    "buttonCount": 1,
+    "imageCount": 1
+  },
+  "reuseGuidance": {
+    "suitableFor": [
+      "corporate homepages",
+      "landing pages with background imagery",
+      "brand identity pages"
+    ],
+    "notSuitableFor": [
+      "blog post pages",
+      "text-heavy content pages without images",
+      "product detail pages"
+    ]
+  },
+  "usage": {
+    "pagesUsing": ["/content/index"],
+    "reuseCount": 1,
+    "lastUsed": "2026-04-15T07:23:00.000Z"
+  }
+}

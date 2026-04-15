@@ -1,0 +1,39 @@
+{
+  "variantName": "cards-locations",
+  "baseBlock": "cards",
+  "version": "1.0.0",
+  "created": "2026-04-15T07:23:00.000Z",
+  "sourceContext": {
+    "originUrl": "https://www.aristocrat.com/",
+    "originPage": "corporate homepage",
+    "blockPosition": "bottom"
+  },
+  "visualCharacteristics": {
+    "colorScheme": "dark",
+    "density": "compact",
+    "purpose": "location-cards",
+    "imagePattern": "large"
+  },
+  "contentPattern": {
+    "structure": "multiple cards with character image + city name",
+    "buttonCount": 0,
+    "imageCount": 12
+  },
+  "reuseGuidance": {
+    "suitableFor": [
+      "office location listings",
+      "global presence showcases",
+      "location-based content with images"
+    ],
+    "notSuitableFor": [
+      "feature highlights with CTAs",
+      "product showcases",
+      "text-heavy content cards"
+    ]
+  },
+  "usage": {
+    "pagesUsing": ["/content/index"],
+    "reuseCount": 1,
+    "lastUsed": "2026-04-15T07:23:00.000Z"
+  }
+}

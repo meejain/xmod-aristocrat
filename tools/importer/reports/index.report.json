@@ -1,0 +1,15 @@
+{
+  "status": "success",
+  "url": "https://www.aristocrat.com/",
+  "path": "index",
+  "timestamp": "2026-04-15T08:12:05.809Z",
+  "title": "A global gaming & technology company | Aristocrat Leisure Limited",
+  "template": "homepage",
+  "blocks": [
+    "hero-corporate",
+    "columns-stats",
+    "columns-about",
+    "cards-powerhouse",
+    "cards-locations"
+  ]
+}

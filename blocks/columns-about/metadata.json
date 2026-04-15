@@ -1,0 +1,39 @@
+{
+  "variantName": "columns-about",
+  "baseBlock": "columns",
+  "version": "1.0.0",
+  "created": "2026-04-15T07:23:00.000Z",
+  "sourceContext": {
+    "originUrl": "https://www.aristocrat.com/",
+    "originPage": "corporate homepage",
+    "blockPosition": "middle"
+  },
+  "visualCharacteristics": {
+    "colorScheme": "light",
+    "density": "spacious",
+    "purpose": "about-section",
+    "imagePattern": "large"
+  },
+  "contentPattern": {
+    "structure": "2 columns with text + image",
+    "buttonCount": 1,
+    "imageCount": 1
+  },
+  "reuseGuidance": {
+    "suitableFor": [
+      "about sections with text and image",
+      "company overview layouts",
+      "side-by-side text and illustration"
+    ],
+    "notSuitableFor": [
+      "stats or number displays",
+      "multi-column grids with 3+ columns",
+      "image-only galleries"
+    ]
+  },
+  "usage": {
+    "pagesUsing": ["/content/index"],
+    "reuseCount": 1,
+    "lastUsed": "2026-04-15T07:23:00.000Z"
+  }
+}
