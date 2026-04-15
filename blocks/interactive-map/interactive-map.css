@@ -1,0 +1,124 @@
+main > .section > .interactive-map-wrapper {
+  max-width: 100% !important;
+  padding: 0 !important;
+}
+
+main > .section:has(.interactive-map-wrapper) {
+  margin: 0;
+}
+
+.interactive-map {
+  --map-bg: linear-gradient(45deg, #75BBB9 0%, #786CFF 100%);
+  --map-text: #ffffff;
+  --map-heading-size: 64px;
+  --map-pin-color: #FF56C0;
+  --map-pin-dot: #ffffff;
+  --map-dark: #072C51;
+
+  background: var(--map-bg);
+  color: var(--map-text);
+  position: relative;
+  overflow: hidden;
+  padding: 160px 0 0;
+  min-height: 700px;
+}
+
+/* Heading row */
+.interactive-map > div:first-child {
+  text-align: center;
+  padding: 0 24px 20px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.interactive-map h2 {
+  color: var(--map-text);
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 1.15;
+  margin: 0;
+  font-family: var(--heading-font-family, 'Baloo Thambi 2', cursive);
+}
+
+@media (width >= 900px) {
+  .interactive-map h2 {
+    font-size: var(--map-heading-size);
+  }
+}
+
+/* SVG map container */
+.interactive-map .map-svg-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  margin-top: -20px;
+}
+
+.interactive-map .map-svg-container svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin-bottom: -60px;
+}
+
+/* Character rows — hidden by JS, map-svg-container shown */
+.interactive-map > div.location-row {
+  display: none;
+}
+
+/* Character overlay container — created by JS */
+.interactive-map .character-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 32px;
+  width: 277px;
+  height: 360px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: 10;
+}
+
+.interactive-map .character-overlay.active {
+  opacity: 1;
+}
+
+.interactive-map .character-overlay img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: bottom left;
+}
+
+/* Pin hover styles — applied by JS */
+.interactive-map .map-pin {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.interactive-map .map-pin:hover {
+  transform: scale(1.2);
+}
+
+/* City label tooltip */
+.interactive-map .city-label {
+  position: absolute;
+  background: var(--map-dark);
+  color: var(--map-text);
+  padding: 6px 14px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  white-space: nowrap;
+  z-index: 20;
+  transform: translate(-50%, -100%);
+}
+
+.interactive-map .city-label.visible {
+  opacity: 1;
+}

@@ -1,0 +1,93 @@
+.two-column {
+  --block-text: rgb(7, 44, 81);
+  --block-padding: 80px 0;
+  --block-gap: 40px;
+  --btn-bg: rgb(250, 114, 79);
+  --btn-color: #fff;
+
+  color: var(--block-text);
+  padding: var(--block-padding);
+}
+
+.two-column h2 {
+  font-family: var(--heading-font-family, sans-serif);
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1.1;
+  margin-top: 0;
+  margin-bottom: 0.5em;
+}
+
+.two-column p {
+  font-size: var(--body-font-size-s);
+  line-height: 1.6;
+}
+
+.two-column .two-column-image {
+  position: relative;
+}
+
+.two-column .two-column-image picture {
+  display: block;
+}
+
+.two-column .two-column-image picture img {
+  width: 100%;
+  height: auto;
+  display: block;
+  position: relative;
+  z-index: 1;
+}
+
+.two-column .two-column-text {
+  padding-bottom: 20px;
+}
+
+/* Button: uses strong wrapping -> primary in this project's decorateButtons */
+main .two-column a.button.primary:any-link {
+  background: var(--btn-bg);
+  border: 1px solid var(--btn-bg);
+  border-radius: 80px;
+  color: var(--btn-color);
+  padding: 16px 32px;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-decoration: none;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+main .two-column a.button.primary:any-link:hover {
+  background: rgb(230, 94, 59);
+  border-color: rgb(230, 94, 59);
+}
+
+@media (width >= 900px) {
+  .two-column {
+    --block-padding: 160px 0;
+  }
+
+  .two-column > div {
+    display: flex;
+    align-items: center;
+    gap: var(--block-gap);
+  }
+
+  .two-column > div > div:first-child {
+    flex: 0 0 50%;
+  }
+
+  .two-column > div > div:last-child {
+    flex: 0 0 45%;
+  }
+
+  .two-column h2 {
+    font-size: 56px;
+  }
+
+  .two-column p {
+    font-size: 16px;
+    line-height: 1.65;
+  }
+}

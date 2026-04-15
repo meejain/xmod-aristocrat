@@ -1,20 +1,24 @@
 footer {
-  background-color: var(--light-color);
+  background-color: rgb(7, 44, 81);
   font-size: var(--body-font-size-xs);
 }
 
 footer .footer > div {
-  margin: auto;
-  max-width: 1200px;
-  padding: 40px 24px 24px;
+  margin: 0;
+  max-width: 100%;
+  padding: 0;
 }
 
 footer .footer p {
   margin: 0;
 }
 
-@media (width >= 900px) {
-  footer .footer > div {
-    padding: 40px 32px 24px;
-  }
+footer .section {
+  margin: 0;
+  padding: 0;
+}
+
+footer .section > div {
+  max-width: 100%;
+  padding: 0;
 }

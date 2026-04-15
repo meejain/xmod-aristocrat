@@ -1,0 +1,246 @@
+/* Cards Slider Block */
+.cards-slider-wrapper {
+  max-width: 100% !important;
+  padding: 0 !important;
+  position: relative;
+}
+
+/* Section-level dark background */
+main .section:has(.cards-slider) {
+  background: rgb(7, 44, 81);
+  color: #fff;
+  margin: 0;
+  padding: 80px 0;
+}
+
+main .section:has(.cards-slider) > div {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+/* Section heading above the block */
+main .section:has(.cards-slider) h2 {
+  text-align: center;
+  color: #fff;
+  font-size: 40px;
+  font-weight: 700;
+  margin-bottom: 0;
+  margin-top: 0;
+}
+
+main .section:has(.cards-slider) > div > h3 {
+  text-align: center;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 400;
+  margin-top: 16px;
+  margin-bottom: 40px;
+}
+
+/* Block container — horizontal scrolling slider */
+.cards-slider {
+  display: flex;
+  gap: 32px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  padding: 0 48px;
+  scrollbar-width: none;
+  justify-content: center;
+}
+
+.cards-slider::-webkit-scrollbar {
+  display: none;
+}
+
+/* Each card row = one card */
+.cards-slider > div {
+  flex: 0 0 300px;
+  min-width: 300px;
+  height: 460px;
+  scroll-snap-align: start;
+  border-radius: 24px;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Card gradient backgrounds — each card gets a unique gradient */
+.cards-slider > div:nth-child(1) {
+  background: linear-gradient(0deg, rgb(120, 108, 255) 0%, rgb(60, 36, 202) 100%);
+}
+
+.cards-slider > div:nth-child(2) {
+  background: linear-gradient(0deg, rgb(240, 166, 255) 0%, rgb(120, 108, 255) 100%);
+}
+
+.cards-slider > div:nth-child(3) {
+  background: linear-gradient(0deg, rgb(146, 203, 128) 0%, rgb(251, 200, 97) 100%);
+}
+
+/* === Front face: image + title overlay === */
+.cards-slider > div > .cards-slider-image {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.cards-slider > div > .cards-slider-image picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.cards-slider > div > .cards-slider-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Title overlay on the front */
+.cards-slider > div > .cards-slider-front-title {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  padding: 24px;
+  pointer-events: none;
+}
+
+.cards-slider > div > .cards-slider-front-title h3 {
+  font-family: Roboto, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: #fff;
+  margin: 0;
+  line-height: 1.5;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* === Back face: gradient + text + CTA (shown on hover) === */
+.cards-slider > div > .cards-slider-content {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.cards-slider > div:hover > .cards-slider-content {
+  opacity: 1;
+}
+
+.cards-slider > div > .cards-slider-content h3 {
+  font-family: Roboto, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: #fff;
+  margin: 0 0 12px;
+  line-height: 1.5;
+}
+
+.cards-slider > div > .cards-slider-content p {
+  font-family: Roboto, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #fff;
+  margin: 0 0 12px;
+}
+
+.cards-slider > div > .cards-slider-content .button-wrapper {
+  margin-top: auto;
+}
+
+/* CTA button */
+main .cards-slider a.button:any-link {
+  display: inline-block;
+  background: rgb(250, 114, 79);
+  color: #fff;
+  border: 1px solid rgb(250, 114, 79);
+  border-radius: 80px;
+  padding: 12px 32px;
+  font-family: Roboto, sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  text-decoration: none;
+  text-align: center;
+  white-space: nowrap;
+}
+
+main .cards-slider a.button:any-link:hover {
+  background: rgb(230, 94, 59);
+  border-color: rgb(230, 94, 59);
+}
+
+/* Navigation arrows */
+.cards-slider-prev,
+.cards-slider-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  background: transparent;
+  color: #fff;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, border-color 0.2s;
+  padding: 0;
+}
+
+.cards-slider-prev:hover,
+.cards-slider-next:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: #fff;
+}
+
+.cards-slider-prev {
+  left: 4px;
+}
+
+.cards-slider-next {
+  right: 4px;
+}
+
+@media (width >= 900px) {
+  main .section:has(.cards-slider) {
+    padding: 80px 0 100px;
+  }
+
+  main .section:has(.cards-slider) h2 {
+    font-size: 48px;
+  }
+
+  main .section:has(.cards-slider) > div > h3 {
+    font-size: 24px;
+    margin-top: 16px;
+    margin-bottom: 48px;
+  }
+
+  .cards-slider > div {
+    flex: 0 0 313px;
+    min-width: 313px;
+    height: 500px;
+  }
+
+  .cards-slider-prev {
+    left: 0;
+  }
+
+  .cards-slider-next {
+    right: 0;
+  }
+}
