@@ -1,20 +1,150 @@
+/* footer — Aristocrat corporate style */
 footer {
-  background-color: var(--light-color);
-  font-size: var(--body-font-size-xs);
+  background-color: #072c51;
+  color: #fff;
+  font-family: roboto, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
 }
 
 footer .footer > div {
   margin: auto;
-  max-width: 1200px;
-  padding: 40px 24px 24px;
+  max-width: 1320px;
+  padding: 60px 24px 40px;
 }
 
 footer .footer p {
   margin: 0;
+  color: #fff;
 }
 
+/* Mobile: stack everything */
+footer .footer .section {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Description paragraph wrapper — col 1 */
+footer .footer .section > .default-content-wrapper:first-child p {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #fff;
+}
+
+/* Columns area — wraps Company / Terms / LinkedIn */
+footer .footer .section > div:not(.default-content-wrapper) {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Column headings */
+footer .footer h4 {
+  color: #fff;
+  font-family: var(--heading-font-family);
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0 0 16px;
+}
+
+/* Links */
+footer .footer ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+footer .footer ul li {
+  margin-bottom: 8px;
+}
+
+footer .footer ul a:any-link {
+  color: #fff;
+  text-decoration: none;
+  font-size: 16px;
+  line-height: 1.8;
+  transition: opacity 0.3s ease, text-decoration 0.3s ease;
+}
+
+footer .footer ul a:hover {
+  opacity: 0.7;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* LinkedIn icon — original SVG with purple strokes, no filter */
+footer .footer a img {
+  width: 53px;
+  height: 53px;
+  transition: opacity 0.3s ease;
+}
+
+footer .footer a:hover img {
+  opacity: 0.7;
+}
+
+/* Copyright wrapper — last default-content-wrapper */
+footer .footer .section > .default-content-wrapper:last-child p {
+  font-size: 14px;
+  color: #fff;
+  opacity: 0.8;
+  border-top: 1px solid rgb(255 255 255 / 15%);
+  padding-top: 24px;
+  margin-top: 0;
+}
+
+/* Desktop: 4-column layout */
 @media (width >= 900px) {
   footer .footer > div {
-    padding: 40px 32px 24px;
+    padding: 80px 32px 40px;
+  }
+
+  footer .footer .section {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr auto;
+    grid-template-rows: auto auto;
+    gap: 0 48px;
+  }
+
+  /* Description — col 1 spanning row 1 */
+  footer .footer .section > .default-content-wrapper:first-child {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  footer .footer .section > .default-content-wrapper:first-child p {
+    font-size: 20px;
+    line-height: 1.5;
+  }
+
+  /* Columns wrapper — cols 2-4 spanning row 1 */
+  footer .footer .section > div:not(.default-content-wrapper) {
+    grid-column: 2 / 5;
+    grid-row: 1;
+    flex-direction: row;
+    gap: 48px;
+    align-items: flex-start;
+  }
+
+  footer .footer .section > div:not(.default-content-wrapper) > div {
+    flex: 1;
+  }
+
+  footer .footer .section > div:not(.default-content-wrapper) > div:last-child {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: flex-start;
+  }
+
+  /* Copyright — full width row 2 */
+  footer .footer .section > .default-content-wrapper:last-child {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    margin-top: 48px;
+  }
+
+  footer .footer ul a:any-link {
+    font-size: 18px;
   }
 }
