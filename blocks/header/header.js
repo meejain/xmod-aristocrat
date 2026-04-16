@@ -61,7 +61,12 @@ function focusNavSection() {
 function toggleAllNavSections(sections, expanded = false) {
   if (!sections) return;
   sections.querySelectorAll('.nav-sections .default-content-wrapper > ul > li').forEach((section) => {
-    section.setAttribute('aria-expanded', expanded);
+    /* On mobile, never auto-expand .nav-drop (Worldwide) — it opens only on click */
+    if (!isDesktop.matches && section.classList.contains('nav-drop') && expanded !== false && expanded !== 'false') {
+      section.setAttribute('aria-expanded', 'false');
+    } else {
+      section.setAttribute('aria-expanded', expanded);
+    }
   });
 }
 
@@ -149,6 +154,10 @@ export default async function decorate(block) {
         if (isDesktop.matches) {
           const expanded = navSection.getAttribute('aria-expanded') === 'true';
           toggleAllNavSections(navSections);
+          navSection.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+        } else if (navSection.classList.contains('nav-drop')) {
+          /* Mobile: toggle Worldwide dropdown on click */
+          const expanded = navSection.getAttribute('aria-expanded') === 'true';
           navSection.setAttribute('aria-expanded', expanded ? 'false' : 'true');
         }
       });

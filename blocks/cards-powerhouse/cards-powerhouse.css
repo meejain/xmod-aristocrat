@@ -46,6 +46,7 @@
 }
 
 /* Slider container — tight horizontal padding on small screens (cf. block_cards_slider-container-lg) */
+/* stylelint-disable-next-line no-descending-specificity */
 .cards-powerhouse {
   position: relative;
   max-width: 1320px;
@@ -182,6 +183,7 @@
   margin: 0 0 1rem;
 }
 
+/* stylelint-disable-next-line no-descending-specificity */
 .cards-powerhouse .card-back-content p {
   font-family: var(--body-font-family);
   font-size: 1rem;
@@ -197,7 +199,7 @@
   }
 }
 
-@media (width >= 1200px) and (max-width: 1399.98px) {
+@media (width >= 1200px) and (width <= 1399.98px) {
   .cards-powerhouse .card-back-content p {
     font-size: 1rem;
   }
@@ -346,6 +348,31 @@
   transform: translateY(-50%);
 }
 
+/* Mobile refinements */
+@media (width < 600px) {
+  .cards-powerhouse-container {
+    padding: 48px 0;
+  }
+
+  .cards-powerhouse-container .default-content-wrapper {
+    margin-bottom: 32px;
+    padding: 0 20px;
+  }
+
+  .cards-powerhouse-container .default-content-wrapper h2 {
+    font-size: 36px;
+  }
+
+  .cards-powerhouse-container .default-content-wrapper h3,
+  .cards-powerhouse-container .default-content-wrapper > p {
+    font-size: 16px;
+  }
+
+  .cards-powerhouse .flip-card-wrapper {
+    height: 380px;
+  }
+}
+
 @media (width >= 900px) {
   .cards-powerhouse-container {
     padding: 160px 0;
@@ -387,7 +414,7 @@
   }
 }
 
-@media (width >= 1200px) and (max-width: 1489.98px) {
+@media (width >= 1200px) and (width <= 1489.98px) {
   .cards-powerhouse {
     padding: 0 4.25rem;
   }

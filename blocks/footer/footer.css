@@ -20,7 +20,7 @@ footer::before {
 footer .footer > div {
   margin: auto;
   max-width: 1320px;
-  padding: 60px 24px 56px;
+  padding: 40px 24px 24px;
 }
 
 footer .footer p {
@@ -28,7 +28,11 @@ footer .footer p {
   color: #fff;
 }
 
-/* Col 1 — description */
+/* Col 1 — description (hidden on mobile, shown on desktop) */
+footer .footer .footer-col-1 {
+  display: none;
+}
+
 footer .footer .footer-col-1 p {
   font-size: 16px;
   line-height: 1.6;
@@ -44,27 +48,30 @@ footer .footer h4 {
   margin: 0 0 16px;
 }
 
-/* Mobile accordion */
+/* Mobile accordion — matches original: coral +/− icon, border-top/bottom separators */
 footer .footer h4.footer-accordion {
   cursor: pointer;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 0;
+  padding: 24px 0;
   margin: 0;
   border-bottom: 1px solid rgb(255 255 255 / 15%);
+  font-size: 24px;
+  font-weight: 700;
 }
 
 footer .footer h4.footer-accordion::after {
   content: '+';
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 300;
   line-height: 1;
+  color: #fa724f;
   transition: transform 0.3s ease;
 }
 
 footer .footer h4.footer-accordion[aria-expanded='true']::after {
-  content: '−';
+  content: '—';
 }
 
 /* Links */
@@ -152,10 +159,12 @@ footer .footer .footer-col-5 p {
   padding-top: 32px;
 }
 
+/* stylelint-disable-next-line no-descending-specificity */
 footer .footer .footer-col-5 a:any-link {
   color: inherit;
 }
 
+/* stylelint-disable-next-line no-descending-specificity */
 footer .footer .footer-col-5 a:hover {
   color: #fa724f;
 }
@@ -174,6 +183,7 @@ footer .footer .footer-col-5 a:hover {
   }
 
   footer .footer .footer-col-1 {
+    display: block;
     grid-column: 1;
     grid-row: 1;
   }

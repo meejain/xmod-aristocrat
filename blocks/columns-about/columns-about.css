@@ -127,6 +127,43 @@
   display: block;
 }
 
+/* Mobile refinements */
+@media (width < 600px) {
+  .columns-about-container {
+    padding: 48px 0;
+  }
+
+  .columns-about-container .columns-about-wrapper {
+    padding: 0 20px;
+  }
+
+  .columns-about h2 {
+    font-size: 32px;
+    margin-bottom: 16px;
+  }
+
+  .columns-about p {
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  .columns-about .button-container,
+  .columns-about .button-wrapper {
+    margin-top: 32px;
+  }
+
+  .columns-about a.button,
+  .columns-about a.button.primary {
+    font-size: 18px;
+    padding: 14px 28px;
+  }
+
+  /* Hide image column on mobile — matches original */
+  .columns-about > div > .columns-about-img-col {
+    display: none;
+  }
+}
+
 /* Desktop */
 @media (width >= 900px) {
   .columns-about-container {

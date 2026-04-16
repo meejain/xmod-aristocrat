@@ -5,6 +5,27 @@ const SLIDE_INTERVAL_MS = 3000;
 const TEXT_MOTION_MS = 800;
 const TEXT_MOTION_EASE = 'cubic-bezier(0.22, 1, 0.36, 1)';
 
+/**
+ * Desktop → Mobile video ID map.
+ * Original aristocrat.com serves portrait (9:16) videos on mobile with character centered,
+ * and separate landscape (16:9) videos on desktop.
+ */
+const MOBILE_VIDEO_MAP = {
+  941099183: '941099273', // Aristocrat Gaming
+  941099217: '941099291', // Product Madness
+  941099250: '941099321', // Aristocrat Interactive
+};
+
+/**
+ * Mobile poster thumbnails from Vimeo CDN — portrait frames with character centered.
+ * Shown as background-image on the video wrapper until the video loads.
+ */
+const MOBILE_POSTER_MAP = {
+  941099273: 'https://i.vimeocdn.com/video/1848380086-9edafb401ec4c6cc5416d615896d753391e29573c00aaaa24e200a650c335814-d',
+  941099291: 'https://i.vimeocdn.com/video/1848380818-29605837a26a7b1f830628b59e0b97664743d5111cf8a72e8da682f5807a20b9-d',
+  941099321: 'https://i.vimeocdn.com/video/1848381627-0e7d769dc330d19a9a1b415c8afa29dc8139df2749a37163886b0f98a5ac15e7-d',
+};
+
 /** Matches --hero-text-parallax / small-screen cap in hero-carousel.css */
 function getTextParallaxPx() {
   if (window.innerWidth < 600) return Math.min(window.innerWidth * 1.2, 720);
@@ -39,7 +60,8 @@ function playTextEnter(slide, forward) {
   const px = getTextParallaxPx();
   content.style.transition = 'none';
   content.style.transform = `translate3d(${forward ? px : -px}px, 0, 0)`;
-  void content.offsetWidth;
+  // eslint-disable-next-line no-unused-expressions
+  content.offsetWidth;
   requestAnimationFrame(() => {
     content.style.transition = `transform ${TEXT_MOTION_MS}ms ${TEXT_MOTION_EASE}`;
     content.style.transform = 'translate3d(0, 0, 0)';
@@ -162,7 +184,15 @@ function createSlide(row, slideIndex, id) {
       column.classList.add('hero-carousel-slide-image');
       const videoLink = column.querySelector('a[href*="vimeo"]');
       if (videoLink) {
-        const videoUrl = videoLink.href;
+        let videoUrl = videoLink.href;
+
+        /* Swap to portrait mobile video when viewport is narrow */
+        if (window.innerWidth < 600) {
+          const idMatch = videoUrl.match(/video\/(\d+)/);
+          if (idMatch && MOBILE_VIDEO_MAP[idMatch[1]]) {
+            videoUrl = videoUrl.replace(idMatch[1], MOBILE_VIDEO_MAP[idMatch[1]]);
+          }
+        }
         const poster = column.querySelector('picture');
         const videoWrapper = document.createElement('div');
         videoWrapper.classList.add('hero-carousel-video-wrapper');
@@ -170,13 +200,25 @@ function createSlide(row, slideIndex, id) {
         if (poster) {
           poster.classList.add('hero-carousel-poster');
           videoWrapper.append(poster);
-          const posterImg = poster.querySelector('img');
-          const posterSrc = posterImg?.currentSrc || posterImg?.src;
-          if (posterSrc) {
-            videoWrapper.style.backgroundImage = `url(${JSON.stringify(posterSrc)})`;
-            videoWrapper.style.backgroundSize = 'cover';
-            videoWrapper.style.backgroundPosition = 'center center';
+
+          /* Use mobile Vimeo poster thumbnail on narrow viewports,
+             desktop authored poster otherwise */
+          const mobileVideoId = videoUrl.match(/video\/(\d+)/)?.[1];
+          const mobilePoster = window.innerWidth < 600 && mobileVideoId
+            ? MOBILE_POSTER_MAP[mobileVideoId]
+            : null;
+
+          if (mobilePoster) {
+            videoWrapper.style.backgroundImage = `url(${JSON.stringify(mobilePoster)})`;
+          } else {
+            const posterImg = poster.querySelector('img');
+            const posterSrc = posterImg?.currentSrc || posterImg?.src;
+            if (posterSrc) {
+              videoWrapper.style.backgroundImage = `url(${JSON.stringify(posterSrc)})`;
+            }
           }
+          videoWrapper.style.backgroundSize = 'cover';
+          videoWrapper.style.backgroundPosition = 'center center';
         }
 
         const iframe = document.createElement('iframe');

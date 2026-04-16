@@ -15,6 +15,7 @@ main > .section.hero-carousel-container > .hero-carousel-wrapper {
 
 .hero-carousel {
   --hero-text-parallax: 1500px;
+
   /* Keep in sync with TEXT_MOTION_MS in hero-carousel.js */
   --hero-text-duration: 0.8s;
 
@@ -349,6 +350,7 @@ main > .section.hero-carousel-container > .hero-carousel-wrapper {
   transform: scale(1.15);
 }
 
+/* stylelint-disable-next-line no-descending-specificity */
 .hero-carousel .hero-carousel-slide-indicator button:focus-visible {
   outline: 2px solid #ff512e;
   outline-offset: 3px;
@@ -411,5 +413,65 @@ main > .section.hero-carousel-container > .hero-carousel-wrapper {
   .hero-carousel .hero-carousel-slide-indicators {
     bottom: max(6rem, env(safe-area-inset-bottom, 0px));
     left: max(16px, env(safe-area-inset-left, 0px));
+  }
+}
+
+/* Mobile overrides — MUST come after base rules to win cascade */
+@media (width < 600px) {
+  .hero-carousel .hero-carousel-slides {
+    min-height: 0;
+    height: min(100dvh, 700px);
+  }
+
+  .hero-carousel .hero-carousel-slide {
+    min-height: 0;
+    height: min(100dvh, 700px);
+  }
+
+  /*
+   * Content panel — full-height flex column with heading at top, button at bottom.
+   * Matches original: heading top ~96px, video character centered, CTA at bottom.
+   */
+  .hero-carousel .hero-carousel-slide-content {
+    inset: 0;
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 5.5rem 20px 2rem;
+    box-sizing: border-box;
+  }
+
+  .hero-carousel .hero-carousel-slide-content h2 {
+    font-size: calc(1.5rem + 4vw);
+  }
+
+  /* Hide description text on mobile — original only shows heading + CTA */
+  .hero-carousel .hero-carousel-slide-content p:not(.button-container, .button-wrapper) {
+    display: none;
+  }
+
+  /* CTA button pushed to bottom by flex space-between */
+  .hero-carousel .hero-carousel-slide-content .button-container,
+  .hero-carousel .hero-carousel-slide-content .button-wrapper {
+    margin-top: auto;
+    text-align: center;
+  }
+
+  .hero-carousel .hero-carousel-slide-content a.button,
+  .hero-carousel .hero-carousel-slide-content a.button.primary {
+    font-size: 18px;
+    padding: 14px 36px;
+  }
+
+  /* Slide indicators — centered, just above the CTA button */
+  .hero-carousel .hero-carousel-slide-indicators {
+    position: absolute;
+    top: auto;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 20;
+    bottom: 5.5rem;
   }
 }

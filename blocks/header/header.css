@@ -31,8 +31,10 @@ header .nav-wrapper.on-scroll {
 header nav {
   /* Nav link underlines */
   --nav-header-teal: #76b9b4;
+
   /* Worldwide sub-menu (bundle: ul.sub-menu background #75BBB9) */
   --nav-megamenu-bg: #75bbb9;
+
   /* ASX / share price (navbar .share-price) */
   --nav-ticker-pink: #e50f7c;
 
@@ -98,7 +100,7 @@ header nav .nav-tools a:focus-visible {
 
 /* Submenu links: slightly dim default (beats generic .nav-sections a:any-link white) */
 header nav .nav-sections ul ul a:any-link {
-  color: rgb(255 255 255 / 0.9);
+  color: rgb(255 255 255 / 90%);
   text-decoration: none;
 }
 
@@ -253,18 +255,14 @@ header nav .nav-tools {
  */
 header nav .nav-tools p {
   display: inline-flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
+  flex-flow: row nowrap;
   align-items: center;
   justify-content: center;
   gap: 0.35rem;
   box-sizing: border-box;
   margin: 0;
   height: 32px;
-  padding-top: 0;
-  padding-bottom: 0;
-  padding-left: 0.75rem;
-  padding-right: 0.5rem;
+  padding: 0 0.5rem 0 0.75rem;
   background-color: var(--nav-ticker-pink);
   color: #000;
   border: none;
@@ -349,6 +347,12 @@ header nav .nav-tools p a:focus-visible {
     color: #ff512e;
   }
 
+  /* Worldwide expanded state — text turns orange like original */
+  header nav[aria-expanded='true'] .nav-sections .nav-drop[aria-expanded='true'] > a,
+  header nav[aria-expanded='true'] .nav-sections .nav-drop[aria-expanded='true'] > p > a {
+    color: #ff512e;
+  }
+
   /* Worldwide — roomier than theme minimum (3px border + global nav p { line-height: 1 }) */
   header nav#nav[aria-expanded='true'] .nav-sections .nav-drop {
     display: inline-block;
@@ -372,8 +376,13 @@ header nav .nav-tools p a:focus-visible {
     display: none;
   }
 
-  /* Worldwide dropdown — mobile (nav .nav-dropdown … ul.sub-menu base rules) */
+  /* Worldwide dropdown — hidden by default on mobile, only opens on click */
   header nav[aria-expanded='true'] .nav-sections .nav-drop > ul {
+    display: none;
+  }
+
+  /* Show dropdown only when Worldwide pill is clicked (aria-expanded="true") */
+  header nav[aria-expanded='true'] .nav-sections .nav-drop[aria-expanded='true'] > ul {
     display: block;
     position: relative;
     top: 0;
@@ -407,7 +416,7 @@ header nav .nav-tools p a:focus-visible {
     left: 14px;
     right: 14px;
     height: 1px;
-    background: rgb(255 255 255 / 0.14);
+    background: rgb(255 255 255 / 14%);
   }
 
   header nav[aria-expanded='true'] .nav-sections .nav-drop > ul > li > a {
@@ -528,7 +537,7 @@ header nav .nav-tools p a:focus-visible {
     border: 3px solid #75bbb9;
     border-radius: 80px;
     padding: 0.85rem 1.35rem 0.65rem;
-    font-size: clamp(0.875rem, 0.2068965517rem + 1.0775862069vw, 1.5rem);
+    font-size: clamp(0.875rem, 0.2069rem + 1.0776vw, 1.5rem);
     line-height: 1.35;
     color: #fff;
     background: transparent;
@@ -540,7 +549,7 @@ header nav .nav-tools p a:focus-visible {
   header nav .nav-sections .nav-drop:focus-within,
   header nav .nav-sections .nav-drop[aria-expanded='true'] {
     border: 3px solid #75bbb9;
-    background: rgb(117 187 185 / 0.12);
+    background: rgb(117 187 185 / 12%);
   }
 
   header nav#nav .nav-sections .nav-drop p,
@@ -602,7 +611,7 @@ header nav .nav-tools p a:focus-visible {
     flex: 0 1 auto;
     position: relative;
     padding: 0;
-    font-size: clamp(0.875rem, 0.2068965517rem + 1.0775862069vw, 1.5rem);
+    font-size: clamp(0.875rem, 0.2069rem + 1.0776vw, 1.5rem);
   }
 
   /*
@@ -617,7 +626,7 @@ header nav .nav-tools p a:focus-visible {
     left: auto;
     right: 0;
     top: 100%;
-    width: clamp(12.5rem, 9.8275862069rem + 4.3103448276vw, 15rem);
+    width: clamp(12.5rem, 9.8276rem + 4.3103vw, 15rem);
     height: auto;
     margin-top: 0.5rem;
     margin-bottom: 0;
@@ -670,13 +679,13 @@ header nav .nav-tools p a:focus-visible {
     left: 14px;
     right: 14px;
     height: 1px;
-    background: rgb(255 255 255 / 0.14);
+    background: rgb(255 255 255 / 14%);
   }
 
   header nav .nav-sections > ul > li > ul > li a,
   header nav .nav-sections .default-content-wrapper > ul > li > ul > li a {
     display: block;
-    font-size: clamp(0.9375rem, 0.6034482759rem + 0.5387931034vw, 1.05rem);
+    font-size: clamp(0.9375rem, 0.6034rem + 0.5388vw, 1.05rem);
     padding: 0;
     margin-left: 1.5rem;
     color: #fff;

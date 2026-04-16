@@ -130,6 +130,37 @@
   color: #786cff;
 }
 
+/* Mobile refinements */
+@media (width < 600px) {
+  .columns-stats-container {
+    padding: 48px 0;
+  }
+
+  .columns-stats-container .default-content-wrapper {
+    margin-bottom: 32px;
+  }
+
+  .columns-stats-container .default-content-wrapper h2 {
+    font-size: 36px;
+  }
+
+  .columns-stats-container .default-content-wrapper h3 {
+    font-size: 18px;
+  }
+
+  .columns-stats strong {
+    font-size: 40px;
+  }
+
+  .columns-stats p {
+    font-size: 22px;
+  }
+
+  .columns-stats > div > div {
+    padding: 16px 8px;
+  }
+}
+
 /* Desktop */
 @media (width >= 900px) {
   .columns-stats-container {
