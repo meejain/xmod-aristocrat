@@ -42,7 +42,7 @@
   --heading-font-size-xs: 22px;
 
   /* nav height */
-  --nav-height: 100px;
+  --nav-height: 72px;
 }
 
 /* fallback font */
@@ -54,6 +54,8 @@
 
 @media (width >= 900px) {
   :root {
+    --nav-height: 100px;
+
     /* body sizes */
     --body-font-size-m: 18px;
     --body-font-size-s: 16px;
@@ -89,6 +91,7 @@ header {
   top: 0;
   left: 0;
   right: 0;
+
   /* Above hero media/decoration stacking (hero-carousel uses isolation + low z-index) */
   z-index: 500;
 }
@@ -306,7 +309,13 @@ main img {
 
 /* sections */
 main > .section {
-  margin: 40px 0;
+  margin: 0;
+}
+
+@media (width >= 900px) {
+  main > .section {
+    margin: 40px 0;
+  }
 }
 
 main > .section > div {
@@ -339,7 +348,13 @@ main .section.dark {
   background-color: var(--dark-bg);
   color: var(--dark-text);
   margin: 0;
-  padding: 80px 0;
+  padding: 48px 0;
+}
+
+@media (width >= 600px) {
+  main .section.dark {
+    padding: 80px 0;
+  }
 }
 
 @media (width >= 900px) {
@@ -401,4 +416,11 @@ main .section.gradient-map p {
 main .section.gradient-map h2 {
   margin: 0 0 24px;
   font-size: 64px;
+}
+
+/* Hide gradient-map / world-map section on mobile — not present in original */
+@media (width < 600px) {
+  main .section.gradient-map {
+    display: none;
+  }
 }
