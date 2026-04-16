@@ -1,9 +1,11 @@
-/* header and nav layout */
+/* header and nav layout — Aristocrat corporate style */
 header .nav-wrapper {
-  background-color: var(--background-color);
+  background: transparent;
   width: 100%;
-  z-index: 2;
+  z-index: 100;
   position: fixed;
+  top: 0;
+  transition: background-color 0.3s ease;
 }
 
 header nav {
@@ -15,10 +17,11 @@ header nav {
   align-items: center;
   gap: 0 24px;
   margin: auto;
-  max-width: 1248px;
+  max-width: 100%;
   height: var(--nav-height);
   padding: 0 24px;
   font-family: var(--body-font-family);
+  color: #fff;
 }
 
 header nav[aria-expanded='true'] {
@@ -28,24 +31,28 @@ header nav[aria-expanded='true'] {
     'tools tools' var(--nav-height) / auto 1fr;
   overflow-y: auto;
   min-height: 100dvh;
+  background-color: var(--dark-bg);
 }
 
 @media (width >= 900px) {
   header .nav-wrapper {
-    position: relative;
+    position: fixed;
   }
 
   header nav {
     display: flex;
     justify-content: space-between;
-    gap: 0 32px;
-    max-width: 1264px;
-    padding: 0 32px;
+    align-items: center;
+    gap: 0 24px;
+    max-width: 100%;
+    padding: 0 72px;
+    height: 117px;
   }
 
   header nav[aria-expanded='true'] {
     min-height: 0;
     overflow: visible;
+    background-color: transparent;
   }
 }
 
@@ -55,7 +62,14 @@ header nav p {
 }
 
 header nav a:any-link {
-  color: currentcolor;
+  color: #fff;
+  text-decoration: none;
+  transition: opacity 0.4s ease;
+}
+
+/* nav link hover — opacity only, no underline */
+header nav .nav-sections a:hover {
+  opacity: 0.65;
 }
 
 /* hamburger */
@@ -72,8 +86,8 @@ header nav .nav-hamburger button {
   border: 0;
   border-radius: 0;
   padding: 0;
-  background-color: var(--background-color);
-  color: inherit;
+  background-color: transparent;
+  color: #fff;
   overflow: initial;
   text-overflow: initial;
   white-space: initial;
@@ -92,7 +106,7 @@ header nav .nav-hamburger-icon::before,
 header nav .nav-hamburger-icon::after {
   content: '';
   position: absolute;
-  background: currentcolor;
+  background: #fff;
 }
 
 header nav[aria-expanded='false'] .nav-hamburger-icon,
@@ -100,7 +114,7 @@ header nav[aria-expanded='false'] .nav-hamburger-icon::before,
 header nav[aria-expanded='false'] .nav-hamburger-icon::after {
   height: 2px;
   border-radius: 2px;
-  background: currentcolor;
+  background: #fff;
 }
 
 header nav[aria-expanded='false'] .nav-hamburger-icon::before {
@@ -139,13 +153,22 @@ header nav[aria-expanded='true'] .nav-hamburger-icon::after {
   }
 }
 
-/* brand */
+/* brand — logo via background SVG */
 header .nav-brand {
   grid-area: brand;
   flex-basis: 128px;
-  font-size: var(--heading-font-size-s);
-  font-weight: 700;
+  flex-shrink: 0;
   line-height: 1;
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+header .nav-brand a {
+  display: block;
+  width: 126px;
+  height: 40px;
+  background: url('/icons/aristocrat-logo.svg') no-repeat center / contain;
+  text-indent: -9999px;
+  overflow: hidden;
 }
 
 header nav .nav-brand img {
@@ -153,7 +176,7 @@ header nav .nav-brand img {
   height: auto;
 }
 
-/* sections */
+/* sections — nav links */
 header nav .nav-sections {
   grid-area: sections;
   flex: 1 1 auto;
@@ -174,7 +197,8 @@ header nav .nav-sections ul {
 }
 
 header nav .nav-sections ul > li {
-  font-weight: 500;
+  font-weight: 400;
+  font-size: 18.8px;
 }
 
 header nav .nav-sections ul > li > ul {
@@ -183,6 +207,7 @@ header nav .nav-sections ul > li > ul {
 
 header nav .nav-sections ul > li > ul > li {
   font-weight: 400;
+  font-size: 17.4px;
 }
 
 @media (width >= 900px) {
@@ -196,29 +221,51 @@ header nav .nav-sections ul > li > ul > li {
     align-self: unset;
   }
 
+  /* regular nav items hover — opacity only, exclude .nav-drop */
+  header nav .nav-sections .default-content-wrapper > ul > li:not(.nav-drop) {
+    cursor: pointer;
+    transition: opacity 0.4s ease;
+  }
+
+  header nav .nav-sections .default-content-wrapper > ul > li:not(.nav-drop):hover {
+    opacity: 0.65;
+  }
+
+  /* Worldwide pill button */
   header nav .nav-sections .nav-drop {
     position: relative;
-    padding-right: 16px;
     cursor: pointer;
+    border: 1px solid rgb(255 255 255 / 50%);
+    border-radius: 20px;
+    padding: 6px 16px;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+  }
+
+  header nav .nav-sections .nav-drop:hover {
+    border-color: #fff;
+    background-color: rgb(255 255 255 / 15%);
+    opacity: 1;
   }
 
   header nav .nav-sections .nav-drop::after {
     content: '';
     display: inline-block;
-    position: absolute;
-    top: 0.5em;
-    right: 2px;
+    position: relative;
+    top: -1px;
+    margin-left: 6px;
     transform: rotate(135deg);
     width: 6px;
     height: 6px;
     border: 2px solid currentcolor;
     border-radius: 0 1px 0 0;
     border-width: 2px 2px 0 0;
+    vertical-align: middle;
+    transition: transform 0.3s ease;
   }
 
-  header nav .nav-sections .nav-drop[aria-expanded='true']::after {
-    top: unset;
-    bottom: 0.5em;
+  header nav .nav-sections .nav-drop[aria-expanded='true']::after,
+  header nav .nav-sections .nav-drop:hover::after {
+    top: 2px;
     transform: rotate(315deg);
   }
 
@@ -226,47 +273,97 @@ header nav .nav-sections ul > li > ul > li {
     display: flex;
     gap: 24px;
     margin: 0;
+    align-items: center;
   }
 
+  /* stylelint-disable-next-line no-descending-specificity */
   header nav .nav-sections .default-content-wrapper > ul > li {
     flex: 0 1 auto;
     position: relative;
   }
 
+  /* Dropdown — hidden by default, anchored to right */
   header nav .nav-sections .default-content-wrapper > ul > li > ul {
-    display: none;
-    position: relative;
+    position: absolute;
+    right: 0;
+    left: auto;
+    width: 260px;
+    top: calc(100% + 12px);
+    padding: 14px 24px;
+    background-color: #75bbb9;
+    border-radius: 8px;
+    white-space: initial;
+    z-index: 200;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px);
+    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
   }
 
+  /* Show dropdown on hover OR aria-expanded */
+  header nav .nav-sections .default-content-wrapper > ul > li:hover > ul,
   header nav .nav-sections .default-content-wrapper > ul > li[aria-expanded='true'] > ul {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto;
     display: block;
-    position: absolute;
-    left: -24px;
-    width: 200px;
-    top: 150%;
-    padding: 16px;
-    background-color: var(--light-color);
-    white-space: initial;
+  }
+
+  /* stylelint-disable-next-line no-descending-specificity */
+  header nav .nav-sections .default-content-wrapper > ul > li > ul > li {
+    padding: 8px 0;
+    border-bottom: 1px solid rgb(255 255 255 / 20%);
+  }
+
+  /* stylelint-disable-next-line no-descending-specificity */
+  header nav .nav-sections .default-content-wrapper > ul > li > ul > li:last-child {
+    border-bottom: none;
+  }
+
+  /* stylelint-disable-next-line no-descending-specificity */
+  header nav .nav-sections .default-content-wrapper > ul > li > ul > li a {
+    display: block;
+    font-size: 17px;
   }
 
   header nav .nav-sections .default-content-wrapper > ul > li > ul::before {
     content: '';
     position: absolute;
     top: -8px;
-    left: 16px;
+    right: 24px;
+    left: auto;
     width: 0;
     height: 0;
     border-left: 8px solid transparent;
     border-right: 8px solid transparent;
-    border-bottom: 8px solid var(--light-color);
+    border-bottom: 8px solid #75bbb9;
   }
 
-  header nav .nav-sections .default-content-wrapper > ul > li > ul > li {
-    padding: 8px 0;
-  }
 }
 
-/* tools */
+/* tools — stock ticker */
 header nav .nav-tools {
   grid-area: tools;
+  flex-shrink: 0;
+}
+
+header nav .nav-tools p {
+  background-color: #e50f7c;
+  color: #000;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: var(--body-font-family);
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+header nav .nav-tools p strong {
+  display: block;
+  font-size: 12px;
+  font-weight: 400;
+  margin-bottom: 2px;
 }
