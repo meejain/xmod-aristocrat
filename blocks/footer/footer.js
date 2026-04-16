@@ -1,4 +1,48 @@
-import { getMetadata, decorateSections, loadSections } from '../../scripts/aem.js';
+import { getMetadata } from '../../scripts/aem.js';
+import { loadFragment } from '../fragment/fragment.js';
+
+const isMobile = window.matchMedia('(max-width: 899px)');
+
+/**
+ * Sets up accordion behavior for footer columns on mobile
+ * @param {Element} footer The footer container
+ */
+function setupAccordions(footer) {
+  footer.querySelectorAll('h4').forEach((heading) => {
+    const list = heading.nextElementSibling;
+    if (!list || list.tagName !== 'UL') return;
+
+    heading.classList.add('footer-accordion');
+    heading.setAttribute('aria-expanded', 'false');
+    list.style.display = 'none';
+
+    heading.addEventListener('click', () => {
+      const expanded = heading.getAttribute('aria-expanded') === 'true';
+      // close all others
+      footer.querySelectorAll('h4.footer-accordion').forEach((h) => {
+        h.setAttribute('aria-expanded', 'false');
+        const ul = h.nextElementSibling;
+        if (ul) ul.style.display = 'none';
+      });
+      if (!expanded) {
+        heading.setAttribute('aria-expanded', 'true');
+        list.style.display = 'block';
+      }
+    });
+  });
+}
+
+/**
+ * Removes accordion behavior (for desktop)
+ * @param {Element} footer The footer container
+ */
+function removeAccordions(footer) {
+  footer.querySelectorAll('h4.footer-accordion').forEach((heading) => {
+    heading.setAttribute('aria-expanded', 'true');
+    const list = heading.nextElementSibling;
+    if (list) list.style.display = '';
+  });
+}
 
 /**
  * loads and decorates the footer
@@ -9,18 +53,28 @@ export default async function decorate(block) {
   const footerPath = footerMeta ? new URL(footerMeta, window.location).pathname : '/footer';
 
   // try /content/ first (local preview), fall back to published path
-  let resp = await fetch('/content/footer.plain.html');
-  if (!resp.ok) {
-    resp = await fetch(`${footerPath}.plain.html`);
+  let fragment = await loadFragment('/content/footer');
+  if (!fragment) {
+    fragment = await loadFragment(footerPath);
   }
-  if (!resp.ok) return;
+  if (!fragment) return;
 
   block.textContent = '';
   const footer = document.createElement('div');
-  footer.innerHTML = await resp.text();
+  footer.className = 'footer-grid';
+  while (fragment.firstElementChild) footer.append(fragment.firstElementChild);
 
-  decorateSections(footer);
-  await loadSections(footer);
+  // Tag each section for CSS grid targeting
+  footer.querySelectorAll('.section').forEach((section, i) => {
+    section.classList.add(`footer-col-${i + 1}`);
+  });
 
   block.append(footer);
+
+  // Accordion on mobile
+  if (isMobile.matches) setupAccordions(footer);
+  isMobile.addEventListener('change', () => {
+    if (isMobile.matches) setupAccordions(footer);
+    else removeAccordions(footer);
+  });
 }
