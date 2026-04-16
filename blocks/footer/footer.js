@@ -1,20 +1,26 @@
-import { getMetadata } from '../../scripts/aem.js';
-import { loadFragment } from '../fragment/fragment.js';
+import { getMetadata, decorateSections, loadSections } from '../../scripts/aem.js';
 
 /**
  * loads and decorates the footer
  * @param {Element} block The footer block element
  */
 export default async function decorate(block) {
-  // load footer as fragment
   const footerMeta = getMetadata('footer');
   const footerPath = footerMeta ? new URL(footerMeta, window.location).pathname : '/footer';
-  const fragment = await loadFragment(footerPath);
 
-  // decorate footer DOM
+  // try /content/ first (local preview), fall back to published path
+  let resp = await fetch('/content/footer.plain.html');
+  if (!resp.ok) {
+    resp = await fetch(`${footerPath}.plain.html`);
+  }
+  if (!resp.ok) return;
+
   block.textContent = '';
   const footer = document.createElement('div');
-  while (fragment.firstElementChild) footer.append(fragment.firstElementChild);
+  footer.innerHTML = await resp.text();
+
+  decorateSections(footer);
+  await loadSections(footer);
 
   block.append(footer);
 }
