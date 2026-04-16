@@ -18,25 +18,11 @@ footer .footer p {
   color: #fff;
 }
 
-/* Mobile: stack everything */
-footer .footer .section {
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-}
-
-/* Description paragraph wrapper — col 1 */
-footer .footer .section > .default-content-wrapper:first-child p {
+/* Col 1 — description */
+footer .footer .footer-col-1 p {
   font-size: 16px;
   line-height: 1.6;
-  color: #fff;
-}
-
-/* Columns area — wraps Company / Terms / LinkedIn */
-footer .footer .section > div:not(.default-content-wrapper) {
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
+  margin-bottom: 32px;
 }
 
 /* Column headings */
@@ -46,6 +32,29 @@ footer .footer h4 {
   font-size: 20px;
   font-weight: 700;
   margin: 0 0 16px;
+}
+
+/* Mobile accordion */
+footer .footer h4.footer-accordion {
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0;
+  margin: 0;
+  border-bottom: 1px solid rgb(255 255 255 / 15%);
+}
+
+footer .footer h4.footer-accordion::after {
+  content: '+';
+  font-size: 24px;
+  font-weight: 300;
+  line-height: 1;
+  transition: transform 0.3s ease;
+}
+
+footer .footer h4.footer-accordion[aria-expanded='true']::after {
+  content: '−';
 }
 
 /* Links */
@@ -59,12 +68,16 @@ footer .footer ul li {
   margin-bottom: 8px;
 }
 
+footer .footer h4.footer-accordion[aria-expanded='true'] + ul {
+  padding: 16px 0;
+}
+
 footer .footer ul a:any-link {
   color: #fff;
   text-decoration: none;
   font-size: 16px;
   line-height: 1.8;
-  transition: opacity 0.3s ease, text-decoration 0.3s ease;
+  transition: opacity 0.3s ease;
 }
 
 footer .footer ul a:hover {
@@ -73,7 +86,11 @@ footer .footer ul a:hover {
   text-underline-offset: 4px;
 }
 
-/* LinkedIn icon — original SVG with purple strokes, no filter */
+/* Col 4 — LinkedIn icon */
+footer .footer .footer-col-4 {
+  padding: 24px 0;
+}
+
 footer .footer a img {
   width: 53px;
   height: 53px;
@@ -84,64 +101,70 @@ footer .footer a:hover img {
   opacity: 0.7;
 }
 
-/* Copyright wrapper — last default-content-wrapper */
-footer .footer .section > .default-content-wrapper:last-child p {
+/* Col 5 — copyright */
+footer .footer .footer-col-5 p {
   font-size: 14px;
-  color: #fff;
   opacity: 0.8;
   border-top: 1px solid rgb(255 255 255 / 15%);
   padding-top: 24px;
-  margin-top: 0;
 }
 
-/* Desktop: 4-column layout */
+/* Desktop: 4-column grid */
 @media (width >= 900px) {
   footer .footer > div {
     padding: 80px 32px 40px;
   }
 
-  footer .footer .section {
+  footer .footer .footer-grid {
     display: grid;
-    grid-template-columns: 1.5fr 1fr 1fr auto;
-    grid-template-rows: auto auto;
+    grid-template-columns: 1.5fr 1fr 1.2fr auto;
+    grid-template-rows: 1fr auto;
     gap: 0 48px;
   }
 
-  /* Description — col 1 spanning row 1 */
-  footer .footer .section > .default-content-wrapper:first-child {
+  footer .footer .footer-col-1 {
     grid-column: 1;
     grid-row: 1;
   }
 
-  footer .footer .section > .default-content-wrapper:first-child p {
+  footer .footer .footer-col-1 p {
     font-size: 20px;
     line-height: 1.5;
+    margin-bottom: 0;
   }
 
-  /* Columns wrapper — cols 2-4 spanning row 1 */
-  footer .footer .section > div:not(.default-content-wrapper) {
-    grid-column: 2 / 5;
+  footer .footer .footer-col-2 {
+    grid-column: 2;
     grid-row: 1;
-    flex-direction: row;
-    gap: 48px;
-    align-items: flex-start;
   }
 
-  footer .footer .section > div:not(.default-content-wrapper) > div {
-    flex: 1;
+  footer .footer .footer-col-3 {
+    grid-column: 3;
+    grid-row: 1;
   }
 
-  footer .footer .section > div:not(.default-content-wrapper) > div:last-child {
-    flex: 0 0 auto;
-    display: flex;
-    align-items: flex-start;
+  footer .footer .footer-col-4 {
+    grid-column: 4;
+    grid-row: 1;
+    padding: 0;
   }
 
-  /* Copyright — full width row 2 */
-  footer .footer .section > .default-content-wrapper:last-child {
+  footer .footer .footer-col-5 {
     grid-column: 1 / -1;
     grid-row: 2;
     margin-top: 48px;
+  }
+
+  /* Remove accordion styles on desktop */
+  footer .footer h4.footer-accordion {
+    border-bottom: none;
+    padding: 0;
+    margin: 0 0 16px;
+    cursor: default;
+  }
+
+  footer .footer h4.footer-accordion::after {
+    display: none;
   }
 
   footer .footer ul a:any-link {
