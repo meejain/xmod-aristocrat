@@ -1,16 +1,26 @@
-/* footer — Aristocrat corporate style */
+/* footer — same type stack as the rest of the site (Baloo via --body / --heading) */
 footer {
+  position: relative;
   background-color: #072c51;
   color: #fff;
-  font-family: roboto, sans-serif;
+  font-family: var(--body-font-family);
   font-size: 16px;
   line-height: 1.5;
+}
+
+/* Thin gradient rule above footer (live site parity) */
+footer::before {
+  content: '';
+  display: block;
+  height: 2px;
+  width: 100%;
+  background: linear-gradient(90deg, #75bbb9 0%, #072c51 100%);
 }
 
 footer .footer > div {
   margin: auto;
   max-width: 1320px;
-  padding: 60px 24px 40px;
+  padding: 60px 24px 56px;
 }
 
 footer .footer p {
@@ -25,12 +35,12 @@ footer .footer .footer-col-1 p {
   margin-bottom: 32px;
 }
 
-/* Column headings */
+/* Column headings — global h4 uses --heading-font-family (Baloo) */
 footer .footer h4 {
   color: #fff;
-  font-family: var(--heading-font-family);
   font-size: 20px;
   font-weight: 700;
+  line-height: 1.3;
   margin: 0 0 16px;
 }
 
@@ -72,47 +82,88 @@ footer .footer h4.footer-accordion[aria-expanded='true'] + ul {
   padding: 16px 0;
 }
 
-footer .footer ul a:any-link {
+/* All footer links: no underline (override global a:hover); coral hover like aristocrat.com */
+footer .footer a:any-link {
   color: #fff;
   text-decoration: none;
+}
+
+footer .footer a:hover {
+  color: #fa724f;
+  text-decoration: none;
+}
+
+footer .footer a:focus-visible {
+  outline: 2px solid #fcc960;
+  outline-offset: 3px;
+}
+
+footer .footer ul a:any-link {
   font-size: 16px;
+  font-weight: 400;
   line-height: 1.8;
-  transition: opacity 0.3s ease;
+  transition: color 0.2s ease;
 }
 
 footer .footer ul a:hover {
-  opacity: 0.7;
-  text-decoration: underline;
-  text-underline-offset: 4px;
+  color: #fa724f;
+  text-decoration: none;
 }
 
-/* Col 4 — LinkedIn icon */
+/* Col 4 — LinkedIn icon (lavender ring; hover = slight dim, not coral on glyph) */
 footer .footer .footer-col-4 {
   padding: 24px 0;
+}
+
+footer .footer .footer-col-4 a:any-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid rgb(240 166 255 / 55%);
+  padding: 2px;
+  transition: border-color 0.2s ease, opacity 0.2s ease;
+}
+
+footer .footer .footer-col-4 a:any-link:hover {
+  color: #fff;
+  border-color: rgb(252 201 96 / 80%);
 }
 
 footer .footer a img {
   width: 53px;
   height: 53px;
-  transition: opacity 0.3s ease;
+  display: block;
+  border-radius: 50%;
+  transition: opacity 0.2s ease;
 }
 
-footer .footer a:hover img {
-  opacity: 0.7;
+footer .footer .footer-col-4 a:hover img {
+  opacity: 0.88;
 }
 
 /* Col 5 — copyright */
 footer .footer .footer-col-5 p {
   font-size: 14px;
-  opacity: 0.8;
+  font-weight: 400;
+  line-height: 1.5;
+  opacity: 0.9;
   border-top: 1px solid rgb(255 255 255 / 15%);
-  padding-top: 24px;
+  padding-top: 32px;
+}
+
+footer .footer .footer-col-5 a:any-link {
+  color: inherit;
+}
+
+footer .footer .footer-col-5 a:hover {
+  color: #fa724f;
 }
 
 /* Desktop: 4-column grid */
 @media (width >= 900px) {
   footer .footer > div {
-    padding: 80px 32px 40px;
+    padding: 80px 32px 72px;
   }
 
   footer .footer .footer-grid {
@@ -152,7 +203,7 @@ footer .footer .footer-col-5 p {
   footer .footer .footer-col-5 {
     grid-column: 1 / -1;
     grid-row: 2;
-    margin-top: 48px;
+    margin-top: 80px;
   }
 
   /* Remove accordion styles on desktop */

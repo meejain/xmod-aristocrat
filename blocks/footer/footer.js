@@ -71,6 +71,13 @@ export default async function decorate(block) {
 
   block.append(footer);
 
+  /* Copyright row only: keep year current (fragment may ship a stale year from import) */
+  const year = new Date().getFullYear();
+  footer.querySelectorAll('.footer-col-5 p').forEach((p) => {
+    if (!/©|rights reserved/i.test(p.textContent)) return;
+    p.textContent = p.textContent.replace(/\b(19|20)\d{2}\b/, String(year));
+  });
+
   // Accordion on mobile
   if (isMobile.matches) setupAccordions(footer);
   isMobile.addEventListener('change', () => {

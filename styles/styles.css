@@ -42,7 +42,7 @@
   --heading-font-size-xs: 22px;
 
   /* nav height */
-  --nav-height: 70px;
+  --nav-height: 100px;
 }
 
 /* fallback font */
@@ -89,7 +89,8 @@ header {
   top: 0;
   left: 0;
   right: 0;
-  z-index: 100;
+  /* Above hero media/decoration stacking (hero-carousel uses isolation + low z-index) */
+  z-index: 500;
 }
 
 header .header,
@@ -380,8 +381,14 @@ main .section.gradient-map {
   background: #75bbb9;
   background: linear-gradient(45deg, #75bbb9 0%, #786cff 100%);
   color: var(--dark-text);
-  padding: 40px 0 0;
+  padding: 96px 0 0;
   margin: 0;
+}
+
+@media (width >= 900px) {
+  main .section.gradient-map {
+    padding-top: 140px;
+  }
 }
 
 main .section.gradient-map h2,

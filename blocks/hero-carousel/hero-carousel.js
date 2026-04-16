@@ -1,29 +1,84 @@
-const SLIDE_INTERVAL = 6000;
+/** Time each slide stays visible before autoplay advances */
+const SLIDE_INTERVAL_MS = 3000;
 
-function updateActiveSlide(slide) {
-  const block = slide.closest('.hero-carousel');
-  const slideIndex = parseInt(slide.dataset.slideIndex, 10);
-  const prevIndex = parseInt(block.dataset.activeSlide, 10);
-  block.dataset.activeSlide = slideIndex;
+/** Text enter/exit animation length (keep in sync with --hero-text-duration in CSS) */
+const TEXT_MOTION_MS = 800;
+const TEXT_MOTION_EASE = 'cubic-bezier(0.22, 1, 0.36, 1)';
 
+/** Matches --hero-text-parallax / small-screen cap in hero-carousel.css */
+function getTextParallaxPx() {
+  if (window.innerWidth < 600) return Math.min(window.innerWidth * 1.2, 720);
+  return 1500;
+}
+
+function clearContentMotion(slide) {
+  const el = slide?.querySelector('.hero-carousel-slide-content');
+  if (!el) return;
+  el.style.transition = '';
+  el.style.transform = '';
+}
+
+/**
+ * "Forward" (next / dot to the right / autoplay): new panel enters right → left (+x → 0).
+ * "Backward" (prev / dot to the left): new panel enters left → right (−x → 0).
+ */
+function isForwardMotion(prevIndex, nextIndex, total) {
+  if (total <= 1) return true;
+  if (prevIndex === total - 1 && nextIndex === 0) return true;
+  if (prevIndex === 0 && nextIndex === total - 1) return false;
+  return nextIndex > prevIndex;
+}
+
+/**
+ * Forces layout between start and end transforms so the transition always runs
+ * (fixes last→first loop where a double-rAF clear could skip interpolation).
+ */
+function playTextEnter(slide, forward) {
+  const content = slide.querySelector('.hero-carousel-slide-content');
+  if (!content) return;
+  const px = getTextParallaxPx();
+  content.style.transition = 'none';
+  content.style.transform = `translate3d(${forward ? px : -px}px, 0, 0)`;
+  void content.offsetWidth;
+  requestAnimationFrame(() => {
+    content.style.transition = `transform ${TEXT_MOTION_MS}ms ${TEXT_MOTION_EASE}`;
+    content.style.transform = 'translate3d(0, 0, 0)';
+  });
+}
+
+function updateActiveSlide(targetSlide) {
+  const block = targetSlide.closest('.hero-carousel');
   const slides = block.querySelectorAll('.hero-carousel-slide');
+  const total = slides.length;
+  const slideIndex = parseInt(targetSlide.dataset.slideIndex, 10);
+  const prevIndex = parseInt(block.dataset.activeSlide, 10);
 
-  // Previous slide: add exiting class, then hide after transition
-  if (prevIndex !== slideIndex && slides[prevIndex]) {
-    slides[prevIndex].classList.add('slide-exiting');
-    setTimeout(() => {
-      slides[prevIndex].setAttribute('aria-hidden', 'true');
-      slides[prevIndex].classList.remove('slide-exiting');
-    }, 800);
+  if (slideIndex === prevIndex) return;
+
+  const forward = isForwardMotion(prevIndex, slideIndex, total);
+  const prevSlide = slides[prevIndex];
+
+  if (prevSlide) {
+    prevSlide.setAttribute('data-exit-dir', forward ? 'left' : 'right');
+    prevSlide.classList.add('slide-exiting');
   }
 
   slides.forEach((aSlide, idx) => {
-    if (idx === slideIndex) {
-      aSlide.setAttribute('aria-hidden', 'false');
-    } else if (idx !== prevIndex) {
+    if (idx !== slideIndex && idx !== prevIndex) {
       aSlide.setAttribute('aria-hidden', 'true');
       aSlide.classList.remove('slide-exiting');
+      aSlide.removeAttribute('data-exit-dir');
+      clearContentMotion(aSlide);
     }
+  });
+
+  clearContentMotion(targetSlide);
+  targetSlide.setAttribute('aria-hidden', 'false');
+  playTextEnter(targetSlide, forward);
+
+  block.dataset.activeSlide = String(slideIndex);
+
+  slides.forEach((aSlide, idx) => {
     aSlide.querySelectorAll('a').forEach((link) => {
       if (idx !== slideIndex) {
         link.setAttribute('tabindex', '-1');
@@ -34,12 +89,27 @@ function updateActiveSlide(slide) {
   });
 
   block.querySelectorAll('.hero-carousel-slide-indicator').forEach((indicator, idx) => {
+    const btn = indicator.querySelector('button');
+    if (!btn) return;
     if (idx !== slideIndex) {
-      indicator.querySelector('button').removeAttribute('disabled');
+      btn.removeAttribute('disabled');
     } else {
-      indicator.querySelector('button').setAttribute('disabled', 'true');
+      btn.setAttribute('disabled', 'true');
     }
   });
+
+  if (prevSlide) {
+    const prevId = block.dataset.heroExitTimeoutId;
+    if (prevId) window.clearTimeout(parseInt(prevId, 10));
+    const tid = window.setTimeout(() => {
+      prevSlide.setAttribute('aria-hidden', 'true');
+      prevSlide.classList.remove('slide-exiting');
+      prevSlide.removeAttribute('data-exit-dir');
+      clearContentMotion(prevSlide);
+      delete block.dataset.heroExitTimeoutId;
+    }, TEXT_MOTION_MS);
+    block.dataset.heroExitTimeoutId = String(tid);
+  }
 }
 
 function showSlide(block, slideIndex = 0) {
@@ -51,16 +121,16 @@ function showSlide(block, slideIndex = 0) {
 }
 
 function startAutoplay(block) {
-  const intervalId = setInterval(() => {
+  const intervalId = window.setInterval(() => {
     const current = parseInt(block.dataset.activeSlide, 10);
     showSlide(block, current + 1);
-  }, SLIDE_INTERVAL);
-  block.dataset.autoplayId = intervalId;
+  }, SLIDE_INTERVAL_MS);
+  block.dataset.autoplayId = String(intervalId);
 }
 
 function stopAutoplay(block) {
   const id = block.dataset.autoplayId;
-  if (id) clearInterval(parseInt(id, 10));
+  if (id) window.clearInterval(parseInt(id, 10));
 }
 
 function bindEvents(block) {
@@ -100,6 +170,13 @@ function createSlide(row, slideIndex, id) {
         if (poster) {
           poster.classList.add('hero-carousel-poster');
           videoWrapper.append(poster);
+          const posterImg = poster.querySelector('img');
+          const posterSrc = posterImg?.currentSrc || posterImg?.src;
+          if (posterSrc) {
+            videoWrapper.style.backgroundImage = `url(${JSON.stringify(posterSrc)})`;
+            videoWrapper.style.backgroundSize = 'cover';
+            videoWrapper.style.backgroundPosition = 'center center';
+          }
         }
 
         const iframe = document.createElement('iframe');
@@ -107,8 +184,14 @@ function createSlide(row, slideIndex, id) {
         iframe.src = `${videoUrl}${separator}background=1&autoplay=1&loop=1&muted=1`;
         iframe.setAttribute('frameborder', '0');
         iframe.setAttribute('allow', 'autoplay; fullscreen');
-        iframe.setAttribute('loading', 'lazy');
         iframe.title = '';
+        /* First slide is LCP: eager load — lazy defers iframe ~1s+ in Chrome */
+        if (slideIndex === 0) {
+          iframe.setAttribute('loading', 'eager');
+          iframe.setAttribute('fetchpriority', 'high');
+        } else {
+          iframe.setAttribute('loading', 'lazy');
+        }
 
         videoWrapper.append(iframe);
         column.textContent = '';
@@ -130,11 +213,21 @@ function createSlide(row, slideIndex, id) {
   });
 
   const labeledBy = slide.querySelector('h1, h2, h3, h4, h5, h6');
-  if (labeledBy) {
+  if (labeledBy?.id) {
     slide.setAttribute('aria-labelledby', labeledBy.getAttribute('id'));
   }
 
   return slide;
+}
+
+function playInitialIntro(firstSlide) {
+  const content = firstSlide.querySelector('.hero-carousel-slide-content');
+  if (!content) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    content.style.transform = 'translate3d(0, 0, 0)';
+    return;
+  }
+  playTextEnter(firstSlide, true);
 }
 
 let carouselId = 0;
@@ -165,7 +258,6 @@ export default function decorate(block) {
 
   rows.forEach((row, idx) => {
     const slide = createSlide(row, idx, carouselId);
-    // All start hidden
     slide.setAttribute('aria-hidden', 'true');
     slidesWrapper.append(slide);
 
@@ -180,13 +272,19 @@ export default function decorate(block) {
   });
 
   container.append(slidesWrapper);
-  if (slideIndicatorsNav) container.append(slideIndicatorsNav);
+  if (slideIndicatorsNav) {
+    slideIndicatorsNav.classList.add('hero-carousel-controls');
+    container.append(slideIndicatorsNav);
+  }
   block.prepend(container);
 
-  // Activate first slide
-  block.dataset.activeSlide = 0;
+  block.dataset.activeSlide = '0';
   const firstSlide = block.querySelector('.hero-carousel-slide');
-  if (firstSlide) firstSlide.setAttribute('aria-hidden', 'false');
+  if (firstSlide) {
+    firstSlide.setAttribute('aria-hidden', 'false');
+    playInitialIntro(firstSlide);
+  }
+
   const firstIndicator = block.querySelector('.hero-carousel-slide-indicator button');
   if (firstIndicator) firstIndicator.setAttribute('disabled', 'true');
 

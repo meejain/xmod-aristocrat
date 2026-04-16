@@ -43,23 +43,31 @@
   transform: translate(0, 0) scale(1);
 }
 
-/* Heading — Baloo Thambi 2, 64px, dark navy #072c51 */
+/* Heading — Baloo Thambi 2, bold, dark navy, tight leading (matches original hero copy) */
 .columns-about h2 {
   font-family: var(--heading-font-family);
   font-size: 40px;
   font-weight: 700;
-  line-height: 1.1;
+  line-height: 1.06;
+  letter-spacing: -0.02em;
   color: #072c51;
   margin-top: 0;
-  text-align: center;
+  margin-bottom: 24px;
+  text-align: left;
 }
 
-/* Body text — Roboto, 20px, dark navy */
+/* Body — same family as heading, regular weight, medium grey (original separates from headline color) */
 .columns-about p {
-  font-family: roboto, sans-serif;
+  font-family: var(--body-font-family);
   font-size: 16px;
-  line-height: 1.5;
-  color: #072c51;
+  font-weight: 400;
+  line-height: 1.55;
+  color: #54667a;
+  margin-top: 0;
+}
+
+.columns-about p + p {
+  margin-top: 1em;
 }
 
 /* CTA button — coral #fa724f, pill, 24px */
@@ -142,12 +150,12 @@
 
   .columns-about h2 {
     font-size: 64px;
-    text-align: left;
+    margin-bottom: 32px;
   }
 
   .columns-about p {
     font-size: 20px;
-    line-height: 1.5;
+    line-height: 1.55;
   }
 
   .columns-about .button-container {

@@ -14,14 +14,27 @@ main > .section.hero-carousel-container > .hero-carousel-wrapper {
 }
 
 .hero-carousel {
+  --hero-text-parallax: 1500px;
+  /* Keep in sync with TEXT_MOTION_MS in hero-carousel.js */
+  --hero-text-duration: 0.8s;
+
   margin: 0;
   padding: 0;
+  isolation: isolate;
+  z-index: 0;
+}
+
+@media (width < 600px) {
+  .hero-carousel {
+    --hero-text-parallax: min(120vw, 720px);
+  }
 }
 
 /* Slides container — positioning parent for dots */
 .hero-carousel .hero-carousel-slides-container {
   position: relative;
   overflow: hidden;
+  z-index: 0;
 }
 
 .hero-carousel .hero-carousel-slides,
@@ -34,22 +47,19 @@ main > .section.hero-carousel-container > .hero-carousel-wrapper {
 .hero-carousel .hero-carousel-slides {
   position: relative;
   width: 100%;
-  min-height: 480px;
+  min-height: min(100dvh, 820px);
   overflow: hidden;
 }
 
-/* Individual slide — stacked, fade transition */
+/* Individual slide — stacked, fade transition (tall immersive hero like aristocrat.com) */
 .hero-carousel .hero-carousel-slide {
   --slide-accent: #9518e3;
 
   position: absolute;
   inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
+  display: block;
   width: 100%;
-  min-height: 480px;
+  min-height: min(100dvh, 820px);
   overflow: hidden;
   background-color: #8b6fc0;
   opacity: 0;
@@ -68,6 +78,7 @@ main > .section.hero-carousel-container > .hero-carousel-wrapper {
   position: absolute;
   inset: 0;
   z-index: 0;
+  overflow: hidden;
 }
 
 .hero-carousel .hero-carousel-slide-image picture {
@@ -82,46 +93,52 @@ main > .section.hero-carousel-container > .hero-carousel-wrapper {
   object-fit: cover;
 }
 
-/* Video wrapper */
+/*
+ * Video — matches aristocrat-2021 .block-shared-hero-video-container .vimeo-iframe-wrapper
+ * (portrait 9:16 padding on small screens + negative margin; 16:9 from 992px; iframe 100% fill — no scale)
+ */
 .hero-carousel .hero-carousel-video-wrapper {
   position: absolute;
-  inset: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+  width: 100%;
+  padding-top: 177.78%;
+  margin-top: -9vh;
+  box-sizing: border-box;
 }
 
-/* Video iframe — scaled to cover entire slide, no sidebars at any viewport */
+@media (width >= 768px) {
+  .hero-carousel .hero-carousel-video-wrapper {
+    margin-top: -40vh;
+  }
+}
+
+@media (width >= 992px) {
+  .hero-carousel .hero-carousel-video-wrapper {
+    margin-top: 0;
+    padding-top: 56.25%;
+  }
+}
+
 .hero-carousel .hero-carousel-video-wrapper iframe {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  min-width: 100%;
-  min-height: 100%;
-  width: auto;
-  height: auto;
-  aspect-ratio: 16 / 9;
-  transform: translate(-50%, -50%) scale(1.2);
-  pointer-events: none;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   border: 0;
   z-index: 2;
-}
-
-@media (aspect-ratio >= 16/9) {
-  .hero-carousel .hero-carousel-video-wrapper iframe {
-    width: 100%;
-    height: auto;
-  }
-}
-
-@media (aspect-ratio < 16/9) {
-  .hero-carousel .hero-carousel-video-wrapper iframe {
-    width: auto;
-    height: 100%;
-  }
+  pointer-events: none;
 }
 
 /* Poster image — hidden by default, only shown briefly before video loads */
 .hero-carousel .hero-carousel-poster {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   z-index: 1;
   display: none;
 }
@@ -133,38 +150,81 @@ main > .section.hero-carousel-container > .hero-carousel-wrapper {
   object-fit: cover;
 }
 
-/* Content overlay — parallax text panel, matches original data-swiper-parallax="-1500" */
+/*
+ * Text panel — inset from viewport (original sits ~10–12% in from left, not flush).
+ * Enter/exit motion is driven inline in hero-carousel.js (next = R→L, prev = L→R).
+ */
 .hero-carousel .hero-carousel-slide-content {
   z-index: 3;
-  position: relative;
-  padding: 32px 24px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 6rem;
   width: 100%;
+  max-width: min(100%, 1320px);
+  margin-right: auto;
+  box-sizing: border-box;
+  padding: 0 24px 0 clamp(40px, 11vw, 180px);
   color: #fff;
-  transform: translate3d(1500px, 0, 0);
-  transition-duration: 800ms;
-  transition-property: transform;
-  transition-timing-function: ease;
-}
-
-/* Active slide — text at final position */
-.hero-carousel .hero-carousel-slide[aria-hidden="false"] .hero-carousel-slide-content {
   transform: translate3d(0, 0, 0);
+  transition: transform var(--hero-text-duration) cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
 }
 
-/* Slide leaving — text exits to the left */
-.hero-carousel .hero-carousel-slide.slide-exiting .hero-carousel-slide-content {
-  transform: translate3d(-1500px, 0, 0);
+@media (width >= 768px) {
+  .hero-carousel .hero-carousel-slide-content {
+    top: 8rem;
+    padding-left: clamp(56px, 11vw, 200px);
+  }
 }
 
-/* Heading */
+@media (width >= 992px) {
+  .hero-carousel .hero-carousel-slide-content {
+    top: 13rem;
+    padding-left: clamp(72px, 12vw, 220px);
+  }
+}
+
+/* Inactive slides: no CSS offset (JS clears inline between transitions) */
+.hero-carousel .hero-carousel-slide[aria-hidden="true"] .hero-carousel-slide-content {
+  transition: none;
+  will-change: auto;
+}
+
+/* Active slide — resting position (inline styles override during enter animation) */
+.hero-carousel .hero-carousel-slide[aria-hidden="false"]:not(.slide-exiting) .hero-carousel-slide-content {
+  transform: translate3d(0, 0, 0);
+  transition: transform var(--hero-text-duration) cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Exiting: forward (next) → panel leaves left; backward (prev) → panel leaves right */
+.hero-carousel .hero-carousel-slide.slide-exiting[data-exit-dir="left"] .hero-carousel-slide-content {
+  transform: translate3d(calc(-1 * var(--hero-text-parallax)), 0, 0);
+  transition: transform var(--hero-text-duration) cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.hero-carousel .hero-carousel-slide.slide-exiting[data-exit-dir="right"] .hero-carousel-slide-content {
+  transform: translate3d(var(--hero-text-parallax), 0, 0);
+  transition: transform var(--hero-text-duration) cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-carousel .hero-carousel-slide-content {
+    transition: none !important;
+    transform: translate3d(0, 0, 0) !important;
+    will-change: auto;
+  }
+}
+
+/* Heading — bundle .block_hero-header */
 .hero-carousel .hero-carousel-slide-content h2 {
   font-family: var(--heading-font-family);
-  font-size: 48px;
+  font-size: calc(1.625rem + 4.5vw);
   font-weight: 800;
-  line-height: 1.05;
+  line-height: 1.1;
   color: #fff;
-  margin: 0 0 24px;
-  max-width: 600px;
+  margin: 0;
+  max-width: 100%;
   letter-spacing: -0.01em;
 }
 
@@ -174,9 +234,9 @@ main > .section.hero-carousel-container > .hero-carousel-wrapper {
   color: var(--slide-accent);
 }
 
-/* CTA button — per-slide colors */
+/* CTA button — per-slide colors (vertical gap from sibling selectors above) */
 .hero-carousel .hero-carousel-slide-content .button-container {
-  margin: 0 0 20px;
+  margin: 0;
 }
 
 .hero-carousel .hero-carousel-slide-content a.button,
@@ -203,32 +263,66 @@ main > .section.hero-carousel-container > .hero-carousel-wrapper {
   text-decoration: none;
 }
 
-/* Description text — white, ~24px */
+/* Subheading — bundle .block_hero-subheading--slider (no left bar), .block_hero-subheading h4 */
+.hero-carousel .hero-carousel-slide-content h3,
+.hero-carousel .hero-carousel-slide-content h4 {
+  font-family: var(--body-font-family);
+  font-size: 1.25rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #fff;
+  margin: 0;
+  max-width: 36rem;
+}
+
+@media (width >= 992px) {
+  .hero-carousel .hero-carousel-slide-content h3,
+  .hero-carousel .hero-carousel-slide-content h4 {
+    font-size: clamp(1.375rem, 0.974rem + 0.647vw, 1.75rem);
+    max-width: 40rem;
+  }
+}
+
+/* Vertical rhythm between stacked items (bundle .content-layout-item + .content-layout-item) */
+.hero-carousel .hero-carousel-slide-content > * + * {
+  margin-top: 1.5rem;
+}
+
+/* Description / body copy in panel */
 .hero-carousel .hero-carousel-slide-content p:not(.button-container) {
   font-family: var(--body-font-family);
   font-size: 20px;
   line-height: 1.5;
   color: #fff;
-  margin: 0 0 8px;
+  margin: 0;
   font-weight: 400;
-  max-width: 540px;
+  max-width: 36rem;
 }
 
 /*
- * Pagination dots — LEFT-aligned, bottom 96px
- * Matches original: left:0, bottom:96px, 10x10 circles
- * Inactive: black, opacity 0.2
- * Active: #ff512e (orange-red), opacity 1
+ * Pagination — extreme bottom-left (aristocrat.com hero; safe-area aware).
  */
 .hero-carousel .hero-carousel-slide-indicators {
   display: flex;
   flex-direction: row;
-  gap: 8px;
+  align-items: center;
+  gap: 0;
   padding: 0;
+  margin: 0;
   position: absolute;
-  bottom: 24px;
-  left: 24px;
-  z-index: 10;
+  bottom: max(0.75rem, env(safe-area-inset-bottom, 0px));
+  left: max(6px, env(safe-area-inset-left, 0px));
+  z-index: 20;
+}
+
+.hero-carousel .hero-carousel-slide-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  margin: 0;
+  padding: 0;
 }
 
 .hero-carousel .hero-carousel-slide-indicator button {
@@ -241,7 +335,7 @@ main > .section.hero-carousel-container > .hero-carousel-wrapper {
   opacity: 0.2;
   border: none;
   cursor: pointer;
-  transition: opacity 0.3s, background-color 0.3s;
+  transition: opacity 0.3s ease, background-color 0.3s ease, transform 0.3s ease;
 }
 
 .hero-carousel .hero-carousel-slide-indicator button:disabled {
@@ -250,27 +344,33 @@ main > .section.hero-carousel-container > .hero-carousel-wrapper {
 }
 
 /* stylelint-disable-next-line no-descending-specificity */
-.hero-carousel .hero-carousel-slide-indicator button:hover {
-  opacity: 0.6;
+.hero-carousel .hero-carousel-slide-indicator button:hover:not(:disabled) {
+  opacity: 0.55;
+  transform: scale(1.15);
+}
+
+.hero-carousel .hero-carousel-slide-indicator button:focus-visible {
+  outline: 2px solid #ff512e;
+  outline-offset: 3px;
 }
 
 /* Desktop */
 @media (width >= 900px) {
   .hero-carousel .hero-carousel-slides {
-    min-height: 620px;
+    min-height: min(100dvh, 920px);
   }
 
   .hero-carousel .hero-carousel-slide {
-    min-height: 620px;
+    min-height: min(100dvh, 920px);
   }
 
   .hero-carousel .hero-carousel-slide-content {
-    padding: 0 0 0 64px;
+    padding: 0 32px 0 clamp(88px, 12vw, 240px);
     max-width: 55%;
   }
 
   .hero-carousel .hero-carousel-slide-content h2 {
-    font-size: 72px;
+    font-size: clamp(3.5rem, 1.362rem + 3.448vw, 5.5rem);
     max-width: 100%;
   }
 
@@ -282,34 +382,34 @@ main > .section.hero-carousel-container > .hero-carousel-wrapper {
 
   .hero-carousel .hero-carousel-slide-content p:not(.button-container) {
     font-size: 24px;
-    max-width: 560px;
+    max-width: 40rem;
   }
 
   .hero-carousel .hero-carousel-slide-indicators {
-    bottom: 40px;
-    left: 64px;
+    bottom: max(5.5rem, env(safe-area-inset-bottom, 0px));
+    left: max(12px, env(safe-area-inset-left, 0px));
   }
 }
 
 @media (width >= 1200px) {
   .hero-carousel .hero-carousel-slides {
-    min-height: 700px;
+    min-height: min(100dvh, 960px);
   }
 
   .hero-carousel .hero-carousel-slide {
-    min-height: 700px;
+    min-height: min(100dvh, 960px);
   }
 
   .hero-carousel .hero-carousel-slide-content {
-    padding: 0 0 0 80px;
+    padding: 0 40px 0 clamp(104px, 12vw, 260px);
   }
 
   .hero-carousel .hero-carousel-slide-content h2 {
-    font-size: 84px;
+    font-size: clamp(3.5rem, 1.362rem + 3.448vw, 5.5rem);
   }
 
   .hero-carousel .hero-carousel-slide-indicators {
-    bottom: 48px;
-    left: 80px;
+    bottom: max(6rem, env(safe-area-inset-bottom, 0px));
+    left: max(16px, env(safe-area-inset-left, 0px));
   }
 }

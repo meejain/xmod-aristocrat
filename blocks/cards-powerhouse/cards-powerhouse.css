@@ -20,17 +20,29 @@
 }
 
 .cards-powerhouse-container .default-content-wrapper h2 {
+  font-family: var(--heading-font-family);
   color: #fff;
   font-size: 48px;
   font-weight: 700;
-  margin: 0 0 16px;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  margin: 0 0 20px;
 }
 
-.cards-powerhouse-container .default-content-wrapper h3 {
-  color: #fff;
-  font-size: 24px;
+/* Intro copy — original is subheadline scale, regular weight, softer than pure white, generous leading */
+.cards-powerhouse-container .default-content-wrapper h3,
+.cards-powerhouse-container .default-content-wrapper > p {
+  font-family: var(--body-font-family);
+  color: rgb(255 255 255 / 88%);
+  font-size: 18px;
   font-weight: 400;
-  margin: 0;
+  line-height: 1.62;
+  margin: 0 auto;
+  max-width: 42rem;
+}
+
+.cards-powerhouse-container .default-content-wrapper > p + p {
+  margin-top: 0.75em;
 }
 
 /* Slider container — tight horizontal padding on small screens (cf. block_cards_slider-container-lg) */
@@ -127,6 +139,8 @@
   font-family: var(--heading-font-family);
   font-size: 1.75rem;
   font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
   color: #fff;
   margin: 0;
   z-index: 2;
@@ -162,15 +176,18 @@
   font-family: var(--heading-font-family);
   font-size: 1.75rem;
   font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
   color: #fff;
   margin: 0 0 1rem;
 }
 
 .cards-powerhouse .card-back-content p {
-  font-family: roboto, sans-serif;
+  font-family: var(--body-font-family);
   font-size: 1rem;
-  color: #fff;
-  line-height: 1.5;
+  font-weight: 400;
+  color: rgb(255 255 255 / 92%);
+  line-height: 1.62;
   margin: 0;
 }
 
@@ -336,10 +353,13 @@
 
   .cards-powerhouse-container .default-content-wrapper h2 {
     font-size: 64px;
+    margin-bottom: 24px;
   }
 
-  .cards-powerhouse-container .default-content-wrapper h3 {
-    font-size: 32px;
+  .cards-powerhouse-container .default-content-wrapper h3,
+  .cards-powerhouse-container .default-content-wrapper > p {
+    font-size: 22px;
+    line-height: 1.65;
   }
 }
 

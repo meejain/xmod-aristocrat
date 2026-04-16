@@ -172,4 +172,20 @@ export default async function decorate(block) {
   navWrapper.className = 'nav-wrapper';
   navWrapper.append(nav);
   block.append(navWrapper);
+
+  /* Solid bar after scroll — parity with .navbar.on-scroll (aristocrat theme) */
+  const scrollThreshold = 6;
+  const onScrollClass = 'on-scroll';
+
+  function syncNavBarScroll() {
+    const y = window.scrollY || document.documentElement.scrollTop;
+    if (y > scrollThreshold) {
+      navWrapper.classList.add(onScrollClass);
+    } else {
+      navWrapper.classList.remove(onScrollClass);
+    }
+  }
+
+  syncNavBarScroll();
+  window.addEventListener('scroll', syncNavBarScroll, { passive: true });
 }
