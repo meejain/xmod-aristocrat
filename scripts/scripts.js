@@ -6,6 +6,7 @@ import {
   decorateSections,
   decorateBlocks,
   decorateTemplateAndTheme,
+  getMetadata,
   waitForFirstImage,
   loadSection,
   loadSections,
@@ -246,12 +247,30 @@ export function decorateMain(main) {
 }
 
 /**
+ * Transparent header uses `body.homepage` (see `blocks/header/header.css`).
+ * Helix often omits `<meta name="template">` on `/`; add the class so root matches index UX.
+ */
+function ensureHomepageBodyClassForSiteRoot() {
+  const raw = window.location.pathname || '/';
+  const path = raw.replace(/\/$/, '') || '/';
+  const isSiteRoot = path === '/' || path === '/index';
+  if (!isSiteRoot) return;
+
+  const tmplRaw = getMetadata('template').trim();
+  const primaryTemplate = tmplRaw.split(',')[0].trim();
+  if (!primaryTemplate || primaryTemplate === 'homepage') {
+    document.body.classList.add('homepage');
+  }
+}
+
+/**
  * Loads everything needed to get to LCP.
  * @param {Element} doc The container element
  */
 async function loadEager(doc) {
   document.documentElement.lang = 'en';
   decorateTemplateAndTheme();
+  ensureHomepageBodyClassForSiteRoot();
   const main = doc.querySelector('main');
   if (main) {
     decorateMain(main);

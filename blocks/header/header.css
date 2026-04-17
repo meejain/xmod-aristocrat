@@ -17,7 +17,11 @@ header .nav-wrapper {
   transition: background-color 0.6s ease, box-shadow 0.6s ease;
 }
 
-/* aristocrat-2021 bundle: .single-post .navbar, .blog .navbar — solid navy off homepage */
+/*
+ * Solid navy off homepage (bundle: .single-post .blog .navbar).
+ * `body.homepage` comes from `<meta name="template" content="homepage">` or, for `/`, from
+ * `ensureHomepageBodyClassForSiteRoot()` in scripts.js when template meta is missing.
+ */
 body:not(.homepage) header .nav-wrapper {
   background-color: var(--dark-bg);
 }

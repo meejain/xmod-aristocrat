@@ -32,6 +32,119 @@ function getTextParallaxPx() {
   return 1500;
 }
 
+/** Aligns with CSS `@media (width < 600px)` used for portrait video swap */
+function isHeroMobileViewport() {
+  return window.innerWidth < 600;
+}
+
+function extractVimeoId(href) {
+  const m = href.match(/(?:player\.vimeo\.com\/video\/|vimeo\.com\/)(\d+)/);
+  return m ? m[1] : null;
+}
+
+function buildVimeoIframeSrc(id) {
+  return `https://player.vimeo.com/video/${id}?background=1&autoplay=1&loop=1&muted=1`;
+}
+
+function vimeoIdFromIframeSrc(src) {
+  if (!src) return null;
+  try {
+    return new URL(src).pathname.match(/\/video\/(\d+)/)?.[1] ?? null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Picks portrait vs landscape Vimeo id and poster for the current viewport.
+ * @param {HTMLElement} videoWrapper `.hero-carousel-video-wrapper`
+ * @param {number} slideIndex For eager/lazy on first iframe src set only
+ */
+function applyVideoWrapperForViewport(videoWrapper, slideIndex) {
+  const desktopId = videoWrapper.dataset.vimeoDesktopId;
+  if (!desktopId) return;
+  const iframe = videoWrapper.querySelector('iframe');
+  if (!iframe) return;
+
+  const targetId = isHeroMobileViewport() && MOBILE_VIDEO_MAP[desktopId]
+    ? MOBILE_VIDEO_MAP[desktopId]
+    : desktopId;
+  const nextSrc = buildVimeoIframeSrc(targetId);
+  const currentId = vimeoIdFromIframeSrc(iframe.src);
+
+  if (currentId !== targetId || !iframe.src) {
+    iframe.src = nextSrc;
+    if (slideIndex === 0) {
+      iframe.setAttribute('loading', 'eager');
+      iframe.setAttribute('fetchpriority', 'high');
+    } else {
+      iframe.setAttribute('loading', 'lazy');
+    }
+  }
+
+  const poster = videoWrapper.querySelector('.hero-carousel-poster');
+  const mobilePoster = isHeroMobileViewport() && MOBILE_POSTER_MAP[targetId]
+    ? MOBILE_POSTER_MAP[targetId]
+    : null;
+
+  if (mobilePoster) {
+    videoWrapper.style.backgroundImage = `url(${JSON.stringify(mobilePoster)})`;
+  } else if (poster) {
+    const posterImg = poster.querySelector('img');
+    const posterSrc = posterImg?.currentSrc || posterImg?.src;
+    if (posterSrc) {
+      videoWrapper.style.backgroundImage = `url(${JSON.stringify(posterSrc)})`;
+    }
+  } else {
+    videoWrapper.style.backgroundImage = '';
+  }
+  videoWrapper.style.backgroundSize = 'cover';
+  videoWrapper.style.backgroundPosition = 'center center';
+}
+
+/** Clears stale text motion when parallax distance changes (viewport resize). */
+function resetVisibleSlideTextMotion(block) {
+  const slide = block.querySelector('.hero-carousel-slide[aria-hidden="false"]');
+  if (!slide || slide.classList.contains('slide-exiting')) return;
+  const content = slide.querySelector('.hero-carousel-slide-content');
+  if (!content) return;
+  content.style.transition = 'none';
+  content.style.transform = 'translate3d(0, 0, 0)';
+  // eslint-disable-next-line no-unused-expressions
+  content.offsetWidth;
+  requestAnimationFrame(() => {
+    content.style.transition = '';
+    content.style.removeProperty('transform');
+  });
+}
+
+function syncHeroCarouselViewport(block) {
+  block.querySelectorAll('.hero-carousel-video-wrapper').forEach((wrap) => {
+    const slide = wrap.closest('.hero-carousel-slide');
+    const slideIndex = slide ? parseInt(slide.dataset.slideIndex, 10) || 0 : 0;
+    applyVideoWrapperForViewport(wrap, slideIndex);
+  });
+  resetVisibleSlideTextMotion(block);
+}
+
+function debounce(fn, ms) {
+  let timeoutId = 0;
+  return (...args) => {
+    window.clearTimeout(timeoutId);
+    timeoutId = window.setTimeout(() => fn(...args), ms);
+  };
+}
+
+function bindViewportResize(block) {
+  const run = debounce(() => syncHeroCarouselViewport(block), 150);
+  window.addEventListener('resize', run, { passive: true });
+  const target = block.querySelector('.hero-carousel-slides-container') || block;
+  if (typeof ResizeObserver !== 'undefined') {
+    const ro = new ResizeObserver(() => run());
+    ro.observe(target);
+  }
+}
+
 function clearContentMotion(slide) {
   const el = slide?.querySelector('.hero-carousel-slide-content');
   if (!el) return;
@@ -184,60 +297,28 @@ function createSlide(row, slideIndex, id) {
       column.classList.add('hero-carousel-slide-image');
       const videoLink = column.querySelector('a[href*="vimeo"]');
       if (videoLink) {
-        let videoUrl = videoLink.href;
+        const desktopId = extractVimeoId(videoLink.href);
+        if (desktopId) {
+          const poster = column.querySelector('picture');
+          const videoWrapper = document.createElement('div');
+          videoWrapper.classList.add('hero-carousel-video-wrapper');
+          videoWrapper.dataset.vimeoDesktopId = desktopId;
 
-        /* Swap to portrait mobile video when viewport is narrow */
-        if (window.innerWidth < 600) {
-          const idMatch = videoUrl.match(/video\/(\d+)/);
-          if (idMatch && MOBILE_VIDEO_MAP[idMatch[1]]) {
-            videoUrl = videoUrl.replace(idMatch[1], MOBILE_VIDEO_MAP[idMatch[1]]);
+          if (poster) {
+            poster.classList.add('hero-carousel-poster');
+            videoWrapper.append(poster);
           }
+
+          const iframe = document.createElement('iframe');
+          iframe.setAttribute('frameborder', '0');
+          iframe.setAttribute('allow', 'autoplay; fullscreen');
+          iframe.title = '';
+          videoWrapper.append(iframe);
+          applyVideoWrapperForViewport(videoWrapper, slideIndex);
+
+          column.textContent = '';
+          column.append(videoWrapper);
         }
-        const poster = column.querySelector('picture');
-        const videoWrapper = document.createElement('div');
-        videoWrapper.classList.add('hero-carousel-video-wrapper');
-
-        if (poster) {
-          poster.classList.add('hero-carousel-poster');
-          videoWrapper.append(poster);
-
-          /* Use mobile Vimeo poster thumbnail on narrow viewports,
-             desktop authored poster otherwise */
-          const mobileVideoId = videoUrl.match(/video\/(\d+)/)?.[1];
-          const mobilePoster = window.innerWidth < 600 && mobileVideoId
-            ? MOBILE_POSTER_MAP[mobileVideoId]
-            : null;
-
-          if (mobilePoster) {
-            videoWrapper.style.backgroundImage = `url(${JSON.stringify(mobilePoster)})`;
-          } else {
-            const posterImg = poster.querySelector('img');
-            const posterSrc = posterImg?.currentSrc || posterImg?.src;
-            if (posterSrc) {
-              videoWrapper.style.backgroundImage = `url(${JSON.stringify(posterSrc)})`;
-            }
-          }
-          videoWrapper.style.backgroundSize = 'cover';
-          videoWrapper.style.backgroundPosition = 'center center';
-        }
-
-        const iframe = document.createElement('iframe');
-        const separator = videoUrl.includes('?') ? '&' : '?';
-        iframe.src = `${videoUrl}${separator}background=1&autoplay=1&loop=1&muted=1`;
-        iframe.setAttribute('frameborder', '0');
-        iframe.setAttribute('allow', 'autoplay; fullscreen');
-        iframe.title = '';
-        /* First slide is LCP: eager load — lazy defers iframe ~1s+ in Chrome */
-        if (slideIndex === 0) {
-          iframe.setAttribute('loading', 'eager');
-          iframe.setAttribute('fetchpriority', 'high');
-        } else {
-          iframe.setAttribute('loading', 'lazy');
-        }
-
-        videoWrapper.append(iframe);
-        column.textContent = '';
-        column.append(videoWrapper);
       }
       slide.append(column);
     } else if (colIdx === 1) {
@@ -334,4 +415,6 @@ export default function decorate(block) {
     bindEvents(block);
     startAutoplay(block);
   }
+
+  bindViewportResize(block);
 }
