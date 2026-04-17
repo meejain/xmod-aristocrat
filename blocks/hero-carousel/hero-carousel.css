@@ -423,9 +423,14 @@ main > .section.hero-carousel-container > .hero-carousel-wrapper {
     height: min(100dvh, 700px);
   }
 
+  /*
+   * Letterboxing below the portrait video used to show the slide fallback `#8b6fc0`
+   * (a lavender band under the CTA). Use the same deep navy as the rest of the hero edge.
+   */
   .hero-carousel .hero-carousel-slide {
     min-height: 0;
     height: min(100dvh, 700px);
+    background-color: var(--dark-bg, #072c51);
   }
 
   /*
