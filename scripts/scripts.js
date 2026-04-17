@@ -75,6 +75,124 @@ function buildAutoBlocks(main) {
 }
 
 /**
+ * Restores h6 + share p after a legacy `.news-article-meta-row` wrapper.
+ * @param {Element} wrapper `.default-content-wrapper`
+ */
+function migrateLegacyNewsArticleMetaRow(wrapper) {
+  const old = wrapper.querySelector(':scope > .news-article-meta-row');
+  if (!old) return;
+  const h6n = old.querySelector(':scope > h6');
+  const pn = old.querySelector(':scope > p');
+  const span = h6n?.querySelector('.news-article-meta-row-category');
+  if (span && h6n) {
+    while (span.firstChild) h6n.insertBefore(span.firstChild, span);
+    span.remove();
+  }
+  if (h6n && pn) old.before(h6n, pn);
+  old.remove();
+}
+
+/**
+ * Builds `.post-date` (icon + time) from a plain date paragraph.
+ * @param {HTMLParagraphElement} dateP Date line as authored `<p>`
+ */
+function buildPostDateBlock(dateP) {
+  const label = dateP.textContent.trim();
+  if (!label) return;
+  const parsed = new Date(label);
+  const iso = Number.isNaN(parsed.getTime()) ? '' : parsed.toISOString();
+
+  const wrap = document.createElement('div');
+  wrap.className = 'post-date mb-3 text-lg-end';
+
+  const codeBase = window.hlx?.codeBasePath || '';
+  const icon = document.createElement('img');
+  icon.className = 'news-article-calendar-icon';
+  icon.src = `${codeBase}/icons/calendar.svg`;
+  icon.width = 16;
+  icon.height = 16;
+  icon.alt = '';
+  icon.setAttribute('aria-hidden', 'true');
+
+  const time = document.createElement('time');
+  if (iso) time.setAttribute('datetime', iso);
+  time.setAttribute('itemprop', 'datePublished');
+  time.textContent = label;
+
+  wrap.append(icon, document.createTextNode('\u00a0\u00a0'), time);
+  dateP.replaceWith(wrap);
+}
+
+/**
+ * Ensures share line uses `<b>Share post:</b>` like the WP template.
+ * @param {HTMLParagraphElement} shareP Share row paragraph
+ */
+function normalizeSharePostMarkup(shareP) {
+  if (shareP.querySelector('b, strong')) return;
+  const t = shareP.textContent.trim();
+  const m = t.match(/^Share post:\s*(.*)$/i);
+  if (!m) return;
+  const rest = m[1] ? ` ${m[1]}` : '';
+  shareP.innerHTML = `<b>Share post:</b>${rest}`;
+}
+
+/**
+ * Matches aristocrat.com article markup: `.post-date`, `.post-meta` / `.post-share`.
+ * @param {Element} main The main element
+ */
+function decorateNewsArticleStructure(main) {
+  if (!document.body.classList.contains('news-article')) return;
+  const wrapper = main.querySelector('.default-content-wrapper');
+  if (!wrapper || wrapper.querySelector(':scope > .post-meta')) return;
+
+  migrateLegacyNewsArticleMetaRow(wrapper);
+
+  const h1 = wrapper.querySelector(':scope > h1');
+  if (!h1) return;
+
+  let afterDate = h1.nextElementSibling;
+  if (afterDate?.tagName === 'P') {
+    buildPostDateBlock(afterDate);
+    afterDate = h1.nextElementSibling;
+  }
+  if (!afterDate?.classList?.contains('post-date')) return;
+
+  const h6 = afterDate.nextElementSibling;
+  const shareP = h6?.nextElementSibling;
+  if (h6?.tagName !== 'H6' || shareP?.tagName !== 'P') return;
+
+  h6.classList.add('subheading', 'mb-0');
+  normalizeSharePostMarkup(shareP);
+  shareP.classList.add('mb-0');
+
+  const postMeta = document.createElement('div');
+  postMeta.className = 'post-meta';
+
+  const row = document.createElement('div');
+  row.className = 'row';
+
+  const colL = document.createElement('div');
+  colL.className = 'col-12 col-lg-6 py-lg-4 d-flex align-items-center';
+
+  const colR = document.createElement('div');
+  colR.className = 'col-12 col-lg-6 text-lg-end py-lg-4';
+
+  const postShare = document.createElement('div');
+  const shareClasses = [
+    'post-share', 'd-flex', 'justify-content-lg-end', 'align-items-center',
+    'py-3', 'mt-4', 'mb-3', 'py-lg-0', 'my-lg-0',
+  ];
+  postShare.classList.add(...shareClasses);
+
+  wrapper.insertBefore(postMeta, h6);
+  postMeta.append(row);
+  row.append(colL, colR);
+  colL.append(h6);
+  postShare.append(shareP);
+  colR.append(postShare);
+}
+
+/**
  * Decorates formatted links to style them as buttons.
  * @param {HTMLElement} main The main container element
  */
@@ -123,6 +241,7 @@ export function decorateMain(main) {
   buildAutoBlocks(main);
   decorateSections(main);
   decorateBlocks(main);
+  decorateNewsArticleStructure(main);
   decorateButtons(main);
 }
 

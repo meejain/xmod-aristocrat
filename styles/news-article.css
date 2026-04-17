@@ -1,16 +1,39 @@
 /*
- * News Article template styles
- * Matches aristocrat.com press release / news article page layout exactly.
+ * News article / press release — parity with aristocrat.com (WordPress theme aristocrat-2021).
  *
- * Structure: breadcrumbs → H1 → date → category pill | share post → body content
- * Container: centered, max-width ~1100px (col-lg-10 of 1320px container)
+ * Source map (theme does not publish raw partials on CDN):
+ * - Layout partial: `dist/css/layout/_site-blog.scss` (404 on pcdn; compiles into main bundle)
+ * - Compiled selectors in theme bundle.css: `.single-post`, `.blog`, `#breadcrumbs`
+ *   https://www.aristocrat.com/wp-content/themes/aristocrat-2021/dist/css/bundle.css
+ *
+ * DOM here uses `body.news-article` (from `<meta name="template" content="news-article">`)
+ * instead of WP body classes `single-post` / `blog`.
+ *
+ * Structure: breadcrumbs → H1 → `.post-date` → `.post-meta` (WP-style row / cols / `.post-share`) → body
+ * Built in `scripts.js` (`decorateNewsArticleStructure`).
  */
+
+/* === MAIN shell — maps .single-post .site-main from bundle === */
+
+body.news-article main {
+  margin-top: 72px;
+  padding-top: 0.75rem;
+  padding-bottom: 2.5rem;
+}
+
+@media (width >= 992px) {
+  body.news-article main {
+    margin-top: 96px;
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+  }
+}
 
 /* === CONTAINER === */
 
 body.news-article main > .section:first-of-type {
   margin: 0;
-  padding-top: 140px;
+  padding-top: 0;
 }
 
 body.news-article main > .section:first-of-type > div {
@@ -22,12 +45,20 @@ body.news-article main > .section:first-of-type > div {
 /* === BODY TEXT (base — declared first so overrides come after) === */
 
 body.news-article main .section p {
-  font-family: Roboto, sans-serif;
+  font-family: roboto, sans-serif;
   font-size: 20px;
   line-height: 1.5;
   color: #072c51;
   margin-top: 0;
   margin-bottom: 1em;
+}
+
+@media (width >= 992px) {
+  body.news-article main .section p,
+  body.news-article main .section ul,
+  body.news-article main .section td {
+    font-size: 1.25rem;
+  }
 }
 
 body.news-article main .section h3 {
@@ -39,8 +70,18 @@ body.news-article main .section h3 {
   margin: 1.5em 0 0.5em;
 }
 
+/* Bundle: .single-post main p a { color: #ff512e !important; } */
+body.news-article main .section p a,
+body.news-article main .section li a,
+body.news-article main .section td a,
 body.news-article main .section .default-content-wrapper a {
-  color: #ff512e;
+  color: #ff512e !important;
+}
+
+body.news-article main .section p a:hover,
+body.news-article main .section li a:hover,
+body.news-article main .section td a:hover {
+  text-decoration: underline !important;
 }
 
 body.news-article main .section img {
@@ -61,18 +102,20 @@ body.news-article h1 {
   margin: 0 0 24px;
 }
 
-/* === H6 CATEGORY TAG (purple pill) === */
+/* === CATEGORY pill — maps .blog .subheading, .single-post .subheading from bundle === */
 
-body.news-article h6 {
+body.news-article h6,
+body.news-article .subheading {
   display: inline-block;
-  font-size: 14px;
+  font-family: var(--body-font-family);
+  font-size: 0.875rem;
   font-weight: 700;
+  line-height: 1;
   color: #fff;
   background-color: #786cff;
-  padding: 8px 20px 6px;
+  padding: 0.6rem 1.25rem 0.4rem;
   border-radius: 40px;
-  margin: 0;
-  line-height: 1.4;
+  margin: 0 0 1.25rem;
   text-transform: none;
 }
 
@@ -97,73 +140,223 @@ body.news-article main > .section:first-of-type > div > p:first-child a:hover {
   text-decoration: underline;
 }
 
+/* WP #breadcrumbs .breadcrumb_last + a:hover from bundle */
+body.news-article #breadcrumbs .breadcrumb_last {
+  color: #9fa0b4;
+}
+
+body.news-article #breadcrumbs a:hover {
+  color: #072c51 !important;
+  text-decoration: underline !important;
+}
+
 /*
- * Date line — right-aligned, grey, with calendar icon (📅)
- * On original: <i class="fas fa-calendar-day"> icon before the date text
- * We use a ::before pseudo-element with a Unicode calendar character
+ * Date — maps `.post-date` + icon + `<time>` (replaces plain `p` in `decorateNewsArticleStructure`).
  */
-/* stylelint-disable-next-line no-descending-specificity */
-body.news-article h1 + p {
+body.news-article .post-date {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 0;
+  box-sizing: border-box;
+  width: 100%;
   font-family: var(--body-font-family);
   font-size: 16px;
+  line-height: 1.5;
   color: #9fa0b4;
-  text-align: right;
   margin: 0;
   padding-bottom: 16px;
-  border-bottom: 1px solid #e5e6ef;
+
+  /* Separator line is `.post-meta` border-top only (avoids double rule with post-meta) */
+  border-bottom: none;
 }
 
-body.news-article h1 + p::before {
-  content: "📅 ";
-  font-size: 14px;
+body.news-article .post-date.mb-3 {
+  margin-bottom: 1rem;
+}
+
+body.news-article .post-date time {
+  color: inherit;
+}
+
+body.news-article .post-date .news-article-calendar-icon {
+  flex-shrink: 0;
+  display: block;
+  margin: 0;
+}
+
+@media (width < 992px) {
+  body.news-article .post-date.text-lg-end {
+    justify-content: flex-start;
+  }
+
+  body.news-article .post-date {
+    padding-bottom: 12px;
+  }
+}
+
+
+/* Bootstrap-like utilities (WP class names on news article header only) */
+body.news-article .d-flex {
+  display: flex;
+}
+
+body.news-article .align-items-center {
+  align-items: center;
+}
+
+body.news-article .mb-0 {
+  margin-bottom: 0;
+}
+
+body.news-article .pe-3 {
+  padding-inline-end: 1rem;
+}
+
+body.news-article .py-3 {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+body.news-article .mt-4 {
+  margin-top: 1.5rem;
+}
+
+body.news-article .mb-3 {
+  margin-bottom: 1rem;
+}
+
+@media (width >= 992px) {
+  body.news-article .text-lg-end {
+    text-align: right;
+  }
+
+  body.news-article .justify-content-lg-end {
+    justify-content: flex-end;
+  }
+
+  body.news-article .py-lg-0 {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  body.news-article .my-lg-0 {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  body.news-article .py-lg-4 {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
 }
 
 /*
- * Category + Share row:
- * Two-column layout with a vertical divider in the middle.
- * Category pill (left) | Share post: (right)
- * Bordered top and bottom with thin grey lines.
- *
- * Category + Share post row:
- * H6 (pill) floats left in a 50% area with right border as vertical divider.
- * P (share post) sits in the right 50% via margin-left.
- * Both are between thin grey horizontal lines.
- *
- * The H6 (category pill) and next P (share post) sit inside .default-content-wrapper.
- * We make the wrapper a flex row for just these two elements using a border box.
- * H6 gets border-top, and the share P gets border-bottom, creating the bordered row.
- * Make the content wrapper position-relative so we can absolute-position the share p.
+ * `.post-meta` / `.row` / `.col-lg-6` — maps WP `.single-post .post-meta` from bundle.
+ * One horizontal rule between date and meta: border-top on `.post-meta` only (not on `.post-date`).
  */
-body.news-article main .default-content-wrapper {
-  position: relative;
-}
-
-body.news-article h1 + p + h6 {
+body.news-article .post-meta {
   border-top: 1px solid #e5e6ef;
-  border-bottom: 1px solid #e5e6ef;
-  padding: 24px 0;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+body.news-article .post-meta .row {
+  display: flex;
+  flex-wrap: wrap;
   margin: 0;
 }
 
-/* Share post: absolutely positioned to the right half of the category pill row */
+body.news-article .post-meta .col-12 {
+  flex: 0 0 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+body.news-article .post-meta .post-share {
+  gap: 0.75rem;
+}
+
+@media (width >= 992px) {
+  body.news-article .post-meta .col-lg-6 {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+
+  body.news-article .post-meta {
+    border-bottom: 1px solid #e5e6ef;
+  }
+
+  body.news-article .post-meta .col-12 + .col-12 {
+    border-top: 0;
+    border-left: 1px solid #e5e6ef;
+  }
+
+  /*
+   * Share column: full column width + flex-end so "Share post:" lines up with `.post-date`
+   * (same right edge as date row; avoid extra inline-end padding from former `pe-3`).
+   */
+  body.news-article .post-meta .row > .col-lg-6:first-child {
+    padding-inline: 0;
+  }
+
+  body.news-article .post-meta .row > .col-lg-6:last-child {
+    padding-inline: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  body.news-article .post-meta .post-share {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+
+/*
+ * Mobile: stacked cols — no border on the column (avoids doubling with `.post-share` top).
+ * Share band: single top + bottom rule only on `.post-share` (matches aristocrat.com mobile).
+ */
+@media (width < 992px) {
+  body.news-article .post-meta .col-12 + .col-12 {
+    border-top: 0;
+  }
+
+  body.news-article .post-meta .row > .col-12:first-child {
+    padding-top: 0.5rem;
+    padding-bottom: 0.25rem;
+  }
+
+  body.news-article .post-meta .post-share {
+    margin-top: 0;
+  }
+
+  body.news-article main .section .post-share {
+    border-top: 1px solid #e5e6ef;
+    border-bottom: 1px solid #e5e6ef;
+  }
+}
+
+/* Share label: `p` is normal weight; only the label is bold (WP `<b>Share post:</b>`) */
 /* stylelint-disable-next-line no-descending-specificity */
-body.news-article h6 + p {
-  position: absolute;
-  right: 0;
-  width: 50%;
+body.news-article main .section .post-meta .post-share p {
+  margin: 0;
+  font-family: var(--body-font-family);
   font-size: 16px;
-  font-weight: 700;
+  font-weight: 400;
+  line-height: 1.25;
   color: #072c51;
-  text-align: right;
-  margin: 0;
-  padding: 24px 0;
-  border-left: 1px solid #e5e6ef;
-  transform: translateY(-100%);
 }
 
-/* Spacing before body content */
+body.news-article main .section .post-meta .post-share p b,
+body.news-article main .section .post-meta .post-share p strong {
+  font-weight: 700;
+}
+
+/* Spacing before first body paragraph after post-meta */
 /* stylelint-disable-next-line no-descending-specificity */
-body.news-article h6 + p + p {
+body.news-article .post-meta + p {
   padding-top: 32px;
   margin-top: 0;
 }
@@ -171,8 +364,9 @@ body.news-article h6 + p + p {
 /* === RESPONSIVE === */
 
 @media (width < 600px) {
-  body.news-article main > .section:first-of-type {
-    padding-top: 100px;
+  body.news-article main {
+    margin-top: 72px;
+    padding-top: 0.75rem;
   }
 
   body.news-article main > .section:first-of-type > div {
@@ -182,20 +376,6 @@ body.news-article h6 + p + p {
   body.news-article h1 {
     font-size: 36px;
     line-height: 1.15;
-  }
-
-  body.news-article h1 + p {
-    text-align: left;
-  }
-
-  body.news-article h1 + p + h6 {
-    width: 100%;
-    border-right: none;
-  }
-
-  body.news-article h6 + p {
-    width: 100%;
-    text-align: left;
   }
 
   body.news-article main .section p {

@@ -17,6 +17,11 @@ header .nav-wrapper {
   transition: background-color 0.6s ease, box-shadow 0.6s ease;
 }
 
+/* aristocrat-2021 bundle: .single-post .navbar, .blog .navbar — solid navy off homepage */
+body:not(.homepage) header .nav-wrapper {
+  background-color: var(--dark-bg);
+}
+
 header .nav-wrapper.on-scroll {
   background-color: var(--dark-bg);
   box-shadow: 0 4px 24px rgb(0 0 0 / 18%);
