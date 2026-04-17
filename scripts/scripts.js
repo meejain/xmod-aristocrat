@@ -167,6 +167,16 @@ async function loadLazy(doc) {
   loadFooter(doc.querySelector('footer'));
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
+
+  // Load template-specific CSS based on metadata
+  const templateMeta = document.querySelector('meta[name="template"]');
+  if (templateMeta) {
+    const tmpl = templateMeta.content.trim();
+    if (tmpl) {
+      loadCSS(`${window.hlx.codeBasePath}/styles/${tmpl}.css`).catch(() => { /* optional */ });
+    }
+  }
+
   loadFonts();
 }
 
