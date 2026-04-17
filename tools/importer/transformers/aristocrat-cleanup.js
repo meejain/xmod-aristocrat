@@ -2,7 +2,7 @@
 /* global WebImporter */
 
 /**
- * Transformer: Aristocrat site cleanup.
+ * Transformer: Aristocrat site cleanup v3.
  * Selectors from captured DOM of https://www.aristocrat.com/
  */
 const H = { before: 'beforeTransform', after: 'afterTransform' };
@@ -48,6 +48,13 @@ export default function transform(hookName, element, payload) {
       '.swiper-progress-bar',
       '.swiper-notification',
     ]);
+
+    // Remove cookie consent text that leaks from Cloudflare/Turnstile
+    element.querySelectorAll('p').forEach((p) => {
+      if (p.textContent.includes('May we use cookies to track your activities')) {
+        p.remove();
+      }
+    });
 
     // Clean tracking attributes
     element.querySelectorAll('*').forEach((el) => {

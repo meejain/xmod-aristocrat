@@ -1,0 +1,210 @@
+/*
+ * News Article template styles
+ * Matches aristocrat.com press release / news article page layout exactly.
+ *
+ * Structure: breadcrumbs → H1 → date → category pill | share post → body content
+ * Container: centered, max-width ~1100px (col-lg-10 of 1320px container)
+ */
+
+/* === CONTAINER === */
+
+body.news-article main > .section:first-of-type {
+  margin: 0;
+  padding-top: 140px;
+}
+
+body.news-article main > .section:first-of-type > div {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+/* === BODY TEXT (base — declared first so overrides come after) === */
+
+body.news-article main .section p {
+  font-family: Roboto, sans-serif;
+  font-size: 20px;
+  line-height: 1.5;
+  color: #072c51;
+  margin-top: 0;
+  margin-bottom: 1em;
+}
+
+body.news-article main .section h3 {
+  font-family: var(--heading-font-family);
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: #072c51;
+  margin: 1.5em 0 0.5em;
+}
+
+body.news-article main .section .default-content-wrapper a {
+  color: #ff512e;
+}
+
+body.news-article main .section img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1em 0;
+}
+
+/* === H1 TITLE === */
+
+body.news-article h1 {
+  font-family: var(--heading-font-family);
+  font-size: 64px;
+  font-weight: 700;
+  line-height: 1.1;
+  color: #072c51;
+  margin: 0 0 24px;
+}
+
+/* === H6 CATEGORY TAG (purple pill) === */
+
+body.news-article h6 {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  background-color: #786cff;
+  padding: 8px 20px 6px;
+  border-radius: 40px;
+  margin: 0;
+  line-height: 1.4;
+  text-transform: none;
+}
+
+/* === ARTICLE HEADER SEQUENCE === */
+
+/* Breadcrumbs */
+body.news-article main > .section:first-of-type > div > p:first-child {
+  font-family: var(--body-font-family);
+  font-size: 16px;
+  line-height: 1.5;
+  color: #072c51;
+  margin: 0 0 16px;
+}
+
+body.news-article main > .section:first-of-type > div > p:first-child a {
+  color: #ff512e;
+  text-decoration: none;
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+body.news-article main > .section:first-of-type > div > p:first-child a:hover {
+  text-decoration: underline;
+}
+
+/*
+ * Date line — right-aligned, grey, with calendar icon (📅)
+ * On original: <i class="fas fa-calendar-day"> icon before the date text
+ * We use a ::before pseudo-element with a Unicode calendar character
+ */
+/* stylelint-disable-next-line no-descending-specificity */
+body.news-article h1 + p {
+  font-family: var(--body-font-family);
+  font-size: 16px;
+  color: #9fa0b4;
+  text-align: right;
+  margin: 0;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e5e6ef;
+}
+
+body.news-article h1 + p::before {
+  content: "📅 ";
+  font-size: 14px;
+}
+
+/*
+ * Category + Share row:
+ * Two-column layout with a vertical divider in the middle.
+ * Category pill (left) | Share post: (right)
+ * Bordered top and bottom with thin grey lines.
+ *
+ * Category + Share post row:
+ * H6 (pill) floats left in a 50% area with right border as vertical divider.
+ * P (share post) sits in the right 50% via margin-left.
+ * Both are between thin grey horizontal lines.
+ *
+ * The H6 (category pill) and next P (share post) sit inside .default-content-wrapper.
+ * We make the wrapper a flex row for just these two elements using a border box.
+ * H6 gets border-top, and the share P gets border-bottom, creating the bordered row.
+ * Make the content wrapper position-relative so we can absolute-position the share p.
+ */
+body.news-article main .default-content-wrapper {
+  position: relative;
+}
+
+body.news-article h1 + p + h6 {
+  border-top: 1px solid #e5e6ef;
+  border-bottom: 1px solid #e5e6ef;
+  padding: 24px 0;
+  margin: 0;
+}
+
+/* Share post: absolutely positioned to the right half of the category pill row */
+/* stylelint-disable-next-line no-descending-specificity */
+body.news-article h6 + p {
+  position: absolute;
+  right: 0;
+  width: 50%;
+  font-size: 16px;
+  font-weight: 700;
+  color: #072c51;
+  text-align: right;
+  margin: 0;
+  padding: 24px 0;
+  border-left: 1px solid #e5e6ef;
+  transform: translateY(-100%);
+}
+
+/* Spacing before body content */
+/* stylelint-disable-next-line no-descending-specificity */
+body.news-article h6 + p + p {
+  padding-top: 32px;
+  margin-top: 0;
+}
+
+/* === RESPONSIVE === */
+
+@media (width < 600px) {
+  body.news-article main > .section:first-of-type {
+    padding-top: 100px;
+  }
+
+  body.news-article main > .section:first-of-type > div {
+    padding: 0 20px;
+  }
+
+  body.news-article h1 {
+    font-size: 36px;
+    line-height: 1.15;
+  }
+
+  body.news-article h1 + p {
+    text-align: left;
+  }
+
+  body.news-article h1 + p + h6 {
+    width: 100%;
+    border-right: none;
+  }
+
+  body.news-article h6 + p {
+    width: 100%;
+    text-align: left;
+  }
+
+  body.news-article main .section p {
+    font-size: 16px;
+  }
+}
+
+@media (width >= 600px) and (width < 900px) {
+  body.news-article h1 {
+    font-size: 48px;
+  }
+}
